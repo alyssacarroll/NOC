@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>NOC Dashboard</title>
+  <style>
+    body {
+      font-family: Helvetica;
+      margin: 30px;
+      background-image: linear-gradient(#08577b, #0e2948, #0e2948, #0e2948, #0e2948, #0e2948);
+      color: white;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 40px;
+      margin-bottom: 30px;
+      text-shadow: 0 4px 10px #736f92;
+    }
+
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      max-width: 2000px;
+      margin: 0 auto;
+      margin-bottom: 20px;
+    }
+
+    .tile {
+      background-image: linear-gradient(to bottom, #3a96b8d7, #337d97d7, #337d97d7, #388ba9d7, #49bee8d7);
+      min-height: 200px;
+      border: 5px solid transparent;
+      border-radius: 10px;
+      padding: 30px;
+      padding-bottom: 10px;
+      font-size: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .tile-title {
+      margin: 10px;
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: 0 4px 10px #33235273;
+    }
+
+    .tile-body {
+      font-size: 1.5rem;
+      opacity: 0.9;
+      vertical-align: middle;
+      text-shadow: 0 4px 10px #2a0747a2;
+    }
+
+    .tile-status {
+      font-size: 1rem;
+      padding-top: 30px;
+    }
+
+    .tile:hover {
+      background-color: #5883a1;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .good {
+      border-color: #2ecc71;
+      box-shadow: 0 0 10px #2ecc71;
+      background-color: #2ecc71;
+    }
+
+    .bad {
+      border-color: #e74c3c;
+      box-shadow: 0 0 10px #e74c3c;
+      background-color: #e74c3c;
+    }
+
+    .warning {
+      border-color: #f1c40f;
+      box-shadow: 0 0 10px #f1c40f;
+      background-color: #f1c40f;
+    }
+
+    .form-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      color: black;
+      padding: 30px;
+      border: 3px solid #f1f1f1;
+      border-radius: 10px;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      width: 600px;
+      max-width: 90%;
+    }
+
+    .form-container label {
+      display: block;
+      margin: 15px 0;
+    }
+
+    .form-popup .btn {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #08577b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin-right: 10px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .form-popup .btn:hover {
+      background-color: #063f5b;
+    }
+
+    .form-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .form-content label {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-buttons {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>NOC Dashboard</h1>
+  <div class="tile-grid" id="tileGrid"></div>
+
+  <div class="tile-grid">
+    <div class="tile" id="01" onclick="openForm('form01')">
+      <div class="tile-title">01</div>
+      <div class="tile-body">Data Center Walk</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="02" onclick="openPopup('check02.html')">
+      <div class="tile-title">02</div>
+      <div class="tile-body">Tech Support Email</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="03" onclick="openPopup('check03.html')">
+      <div class="tile-title">03</div>
+      <div class="tile-body">VPN TAK & WAVE</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="04" onclick="openPopup('check04.html')">
+      <div class="tile-title">04</div>
+      <div class="tile-body">WUG</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="05" onclick="openPopup('check05.html')">
+      <div class="tile-title">05</div>
+      <div class="tile-body">TAK Server Federation</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+  </div>
+
+  <!--Row Two-->
+  <div class="tile-grid">
+    <div class="tile" id="06" onclick="openPopup('check06.html')">
+      <div class="tile-title">06</div>
+      <div class="tile-body">PTL</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="07" onclick="openPopup('check07.html')">
+      <div class="tile-title">07</div>
+      <div class="tile-body">Message</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="08" onclick="openPopup('check08.html')">
+      <div class="tile-title">08</div>
+      <div class="tile-body">Landing Pad Server</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="09" onclick="openPopup('check09.html')">
+      <div class="tile-title">09</div>
+      <div class="tile-body">DS File</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="10" onclick="openPopup('check10.html')">
+      <div class="tile-title">10</div>
+      <div class="tile-body">WAVE Server</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+  </div>
+
+  <!--Row Three-->
+  <div class="tile-grid">
+    <div class="tile" id="11" onclick="openPopup('check11.html')">
+      <div class="tile-title">11</div>
+      <div class="tile-body">Eaton Dashboard</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="12" onclick="openPopup('check12.html')">
+      <div class="tile-title">12</div>
+      <div class="tile-body">InControl</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="13" onclick="openPopup('check13.html')">
+      <div class="tile-title">13</div>
+      <div class="tile-body">Veeam Daily Backup</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="14" onclick="openPopup('check14.html')">
+      <div class="tile-title">14</div>
+      <div class="tile-body">PTB Server Checks</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+
+    <div class="tile" id="15" onclick="openPopup('check15.html')">
+      <div class="tile-title">15</div>
+      <div class="tile-body">IPsec</div>
+      <div class="tile-status">Status: Loading...</div>
+    </div>
+  </div>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRAoWDsaf60M6rD5I7tdjIJXCcqKrYmv3_HsaFR1Li975yA-mNfoMbbioCuSdG8ZUnqeZyGhPt-VnXx/pub?output=csv";
+
+    // Populate tiles with CSV data
+    fetch(CSV_URL)
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.trim().split("\n").slice(1); // Skip header
+        rows.forEach(row => {
+          const [checkNum, name, statusRaw] = row.split(",");
+          const status = statusRaw?.trim().toLowerCase();
+          const tileId = `${checkNum.padStart(2, "0")}`;
+
+          const tile = document.getElementById(tileId);
+          if (tile) {
+            if (status) tile.classList.add(status);
+            const statusDiv = tile.querySelector(".tile-status");
+            if (statusDiv) {
+              statusDiv.textContent = `Status: ${status || "N/A"}`;
+            }
+          }
+        });
+      })
+      .catch(error => {
+        console.error("CSV fetch error:", error);
+      });
+
+    function openForm(id) {
+      console.log("Opening form:", id);
+      document.getElementById(id).style.display = "block";
+    }
+
+    function closeForm(id) {
+      console.log("Closing form:", id);
+      document.getElementById(id).style.display = "none";
+    }
+
+    function submitForm(event, formId) {
+      event.preventDefault();
+
+      console.log("Submitting form:", formId);
+
+      const form = document.getElementById(formId);
+      if (!form) {
+        console.error("Form not found with ID:", formId);
+        return;
+      }
+
+      const checkNumber = formId.replace("form", "");
+      const completed = form.querySelector('input[name="completed"]')?.checked ?? false;
+      const comments = form.querySelector('textarea[name="comments"]')?.value ?? "";
+
+      console.log("Form data:", { checkNumber, completed, comments });
+
+      fetch('https://script.google.com/macros/s/AKfycbykufqTrfQXeH-81fMxSPCZL8Hn0q80BJbBwdOKltDwMx7bDKzWMS9yiwyvl7wsg71kaQ/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          checkNumber,
+          completed,
+          comments
+        })
+      })
+
+
+        .then(response => {
+          console.log("Fetch response status:", response.status);
+          return response.text();
+        })
+        .then(result => {
+          console.log("Submission result:", result);
+          alert("Form submitted!");
+          closeForm(formId);
+        })
+        .catch(error => {
+          console.error("Submission failed:", error);
+          alert("Form submission failed. Check console for errors.");
+        });
+    }
+  </script>
+
+
+  <!-- Popup Form -->
+  <div id="form01" class="form-popup">
+    <form class="form-container" onsubmit="submitForm(event, 'form01')">
+      <h2>Check 01: Data Center Walk</h2>
+
+      <div class="form-content">
+        <label><input type="checkbox" name="completed"> Walkthrough Completed</label>
+        <label> Comments:
+          <textarea name="comments" rows="3" style="width:100%;"></textarea>
+        </label>
+      </div>
+
+      <div class="form-buttons">
+        <button type="submit">Submit</button>
+        <button type="button" onclick="closeForm('form01')">Close</button>
+      </div>
+
+    </form>
+  </div>
+
+
+</body>
+
+</html>
