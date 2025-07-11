@@ -291,6 +291,14 @@
       .catch(error => {
         console.error("CSV fetch error:", error);
       });
+
+    // Open a form popup (new window)
+    function openPopup(formFile) {
+      const popup = window.open(formFile, '_blank', 'width=700,height=600');
+      if (!popup) {
+        alert("Popup blocked! Please allow popups for this site.");
+      }
+    }
   </script>
 
 
