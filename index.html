@@ -404,10 +404,10 @@
           messageDiv.style.backgroundColor = '#48c78e';
           messageDiv.style.color = 'white';
           form.reset();
-          setTimeout(() => {
+          setTimeout(() => {      // Close modal after a short delay
             closeModal();
             updateTileStatuses(); // Refresh tile statuses after submission
-          }, 2000);
+          }, 500);                // 500ms delay
         } else {
           throw new Error(data.message || 'Submission failed');
         }
