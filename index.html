@@ -281,34 +281,43 @@
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRVOcAqswtmyk_vtsIiOeBy6zwv_jT4pxx_UOBlcsr-n4cxa0PnFluIvTP_E9yXk3nCB-SLWi_cOSiW/pub?output=csv";
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuQKu1YOgZvkhwhnOTdqAEnUMFCm7SkKziz6iqAU3YF4eyjHKglIONFgYLkMFo6X6-Tw/exec";
 
-    // Populate tile status from CSV
-    fetch(CSV_URL)
-      .then(response => response.text())
-      .then(data => {
-        const rows = data.trim().split("\n").slice(1); // Skip header
-        rows.forEach(row => {
-          const [checkNum, statusRaw, notes, timestamp] = row.split(",");
-          const status = statusRaw?.trim().toLowerCase();
-          const tileId = `${checkNum.padStart(2, "0")}`;
+    // Function to update tile statuses
+    function updateTileStatuses() {
+      fetch(CSV_URL)
+        .then(response => response.text())
+        .then(data => {
+          const rows = data.trim().split("\n").slice(1); // Skip header
+          rows.forEach(row => {
+            const [checkNum, statusRaw, notes, timestamp] = row.split(",");
+            const status = statusRaw?.trim().toLowerCase();
+            const tileId = `${checkNum.padStart(2, "0")}`;
 
-          const tile = document.getElementById(tileId);
-          if (tile) {
-            if (status) tile.classList.add(status);
-            const statusDiv = tile.querySelector(".tile-status");
-            var statusName = "";
-            if (status == "true") statusName = "Complete";
-            else if (status == "false") statusName = "Incomplete";
-            else if (status == "warning") statusName = "Warning";
-            else statusName = "N/A";
-            if (statusDiv) statusDiv.textContent = `Status: ${statusName}`;
-          }
+            const tile = document.getElementById(tileId);
+            if (tile) {
+              // Remove previous status classes
+              tile.classList.remove('true', 'false', 'bad', 'warning');
+              // Add new status class
+              if (status) tile.classList.add(status);
+              const statusDiv = tile.querySelector(".tile-status");
+              let statusName = "";
+              if (status === "true") statusName = "Complete";
+              else if (status === "false") statusName = "Incomplete";
+              else if (status === "warning") statusName = "Warning";
+              else if (status === "bad") statusName = "Error";
+              else statusName = "N/A";
+              if (statusDiv) statusDiv.textContent = `Status: ${statusName}`;
+            }
+          });
+        })
+        .catch(error => {
+          console.error("CSV fetch error:", error);
         });
-      })
-      .catch(error => {
-        console.error("CSV fetch error:", error);
-      });
+    }
 
-    // Form content templates (for simplicity, only check 01 is shown; add others similarly)
+    // Initial load of tile statuses
+    updateTileStatuses();
+
+    // Form content templates
     const formTemplates = {
       '01': `
         <input type="hidden" name="checkNumber" value="01" />
@@ -319,7 +328,6 @@
           </label>
         </div>
       `,
-      // Add templates for other checks (02, 03, etc.) here
       '02': `
         <input type="hidden" name="checkNumber" value="02" />
         <div class="form-content">
@@ -329,7 +337,7 @@
           </label>
         </div>
       `,
-      // Continue for other checks...
+      // Add templates for other checks (03 to 15) as needed
     };
 
     function openModal(checkNum, title) {
@@ -338,17 +346,10 @@
       const formContent = document.getElementById('formContent');
       const backdrop = document.getElementById('modalBackdrop');
 
-      // Set modal title
       modalTitle.textContent = `Check ${checkNum}: ${title}`;
-
-      // Load form content
       formContent.innerHTML = formTemplates[checkNum] || `<p>Form for check ${checkNum} not available.</p>`;
-
-      // Show modal and backdrop
       modal.style.display = 'block';
       backdrop.style.display = 'block';
-
-      // Reset form and message
       document.getElementById('modalForm').reset();
       document.getElementById('message').textContent = '';
     }
@@ -376,12 +377,10 @@
         const formData = new FormData(form);
         const formDataObj = {};
 
-        // Convert FormData to object
         for (let [key, value] of formData.entries()) {
           formDataObj[key] = value;
         }
 
-        // Default status to false if not checked
         if (!formData.has('Completed')) {
           formDataObj['Completed'] = 'FALSE';
         }
@@ -389,7 +388,6 @@
         const now = new Date();
         formDataObj['Timestamp'] = now.toLocaleString();
 
-        // Submit form data
         const response = await fetch(SCRIPT_URL, {
           redirect: 'follow',
           method: 'POST',
@@ -406,7 +404,10 @@
           messageDiv.style.backgroundColor = '#48c78e';
           messageDiv.style.color = 'white';
           form.reset();
-          setTimeout(closeModal, 2000); // Close modal after 2 seconds
+          setTimeout(() => {
+            closeModal();
+            updateTileStatuses(); // Refresh tile statuses after submission
+          }, 2000);
         } else {
           throw new Error(data.message || 'Submission failed');
         }
