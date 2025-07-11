@@ -262,7 +262,7 @@
   </div>
 
   <script>
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRAoWDsaf60M6rD5I7tdjIJXCcqKrYmv3_HsaFR1Li975yA-mNfoMbbioCuSdG8ZUnqeZyGhPt-VnXx/pub?output=csv";
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRVOcAqswtmyk_vtsIiOeBy6zwv_jT4pxx_UOBlcsr-n4cxa0PnFluIvTP_E9yXk3nCB-SLWi_cOSiW/pub?output=csv";
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuQKu1YOgZvkhwhnOTdqAEnUMFCm7SkKziz6iqAU3YF4eyjHKglIONFgYLkMFo6X6-Tw/exec";
 
     // Populate tile status from CSV
@@ -271,7 +271,7 @@
       .then(data => {
         const rows = data.trim().split("\n").slice(1); // Skip header
         rows.forEach(row => {
-          const [checkNum, name, statusRaw] = row.split(",");
+          const [checkNum, statusRaw, notes, timestamp] = row.split(",");
           const status = statusRaw?.trim().toLowerCase();
           const tileId = `${checkNum.padStart(2, "0")}`;
 
@@ -286,14 +286,6 @@
       .catch(error => {
         console.error("CSV fetch error:", error);
       });
-
-    // Open a form popup (new window)
-    function openPopup(formFile) {
-      const popup = window.open(formFile, '_blank', 'width=700,height=600');
-      if (!popup) {
-        alert("Popup blocked! Please allow popups for this site.");
-      }
-    }
   </script>
 
 
