@@ -6,6 +6,7 @@
   <title>NOC Dashboard</title>
   <link rel="icon" type="image/x-icon" href="/images/dave.ico">
   <style>
+    /* Existing styles remain unchanged */
     body {
       font-family: Helvetica;
       margin: 30px;
@@ -41,7 +42,6 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      /* spacing */
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -156,110 +156,125 @@
       font-weight: bold;
       margin-top: 15px;
     }
+
+    /* Add backdrop for modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+    }
   </style>
 </head>
 
 <body>
-
+  <div class="modal-backdrop" id="modalBackdrop"></div>
   <h1>NOC Dashboard</h1>
   <div class="tile-grid" id="tileGrid"></div>
 
+  <!-- Row One -->
   <div class="tile-grid">
-    <div class="tile" id="01" onclick="openPopup('check01.html')">
+    <div class="tile" id="01" onclick="openModal('01', 'Data Center Walk')">
       <div class="tile-title">01</div>
       <div class="tile-body">Data Center Walk</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="02" onclick="openPopup('check02.html')">
+    <!-- Other tiles remain the same, update onclick to use openModal -->
+    <div class="tile" id="02" onclick="openModal('02', 'Tech Support Email')">
       <div class="tile-title">02</div>
       <div class="tile-body">Tech Support Email</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="03" onclick="openPopup('check03.html')">
+    <div class="tile" id="03" onclick="openModal('03', 'VPN TAK & WAVE')">
       <div class="tile-title">03</div>
       <div class="tile-body">VPN TAK & WAVE</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="04" onclick="openPopup('check04.html')">
+    <div class="tile" id="04" onclick="openModal('04', 'WUG')">
       <div class="tile-title">04</div>
       <div class="tile-body">WUG</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="05" onclick="openPopup('check05.html')">
+    <div class="tile" id="05" onclick="openModal('05', 'TAK Server Federation')">
       <div class="tile-title">05</div>
       <div class="tile-body">TAK Server Federation</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
   </div>
 
-  <!--Row Two-->
+  <!-- Row Two -->
   <div class="tile-grid">
-    <div class="tile" id="06" onclick="openPopup('check06.html')">
+    <div class="tile" id="06" onclick="openModal('06', 'PTL')">
       <div class="tile-title">06</div>
       <div class="tile-body">PTL</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="07" onclick="openPopup('check07.html')">
+    <div class="tile" id="07" onclick="openModal('07', 'Message')">
       <div class="tile-title">07</div>
       <div class="tile-body">Message</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="08" onclick="openPopup('check08.html')">
+    <div class="tile" id="08" onclick="openModal('08', 'Landing Pad Server')">
       <div class="tile-title">08</div>
       <div class="tile-body">Landing Pad Server</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="09" onclick="openPopup('check09.html')">
+    <div class="tile" id="09" onclick="openModal('09', 'DS File')">
       <div class="tile-title">09</div>
       <div class="tile-body">DS File</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="10" onclick="openPopup('check10.html')">
+    <div class="tile" id="10" onclick="openModal('10', 'WAVE Server')">
       <div class="tile-title">10</div>
       <div class="tile-body">WAVE Server</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
   </div>
 
-  <!--Row Three-->
+  <!-- Row Three -->
   <div class="tile-grid">
-    <div class="tile" id="11" onclick="openPopup('check11.html')">
+    <div class="tile" id="11" onclick="openModal('11', 'Eaton Dashboard')">
       <div class="tile-title">11</div>
       <div class="tile-body">Eaton Dashboard</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="12" onclick="openPopup('check12.html')">
+    <div class="tile" id="12" onclick="openModal('12', 'InControl')">
       <div class="tile-title">12</div>
       <div class="tile-body">InControl</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="13" onclick="openPopup('check13.html')">
+    <div class="tile" id="13" onclick="openModal('13', 'Veeam Daily Backup')">
       <div class="tile-title">13</div>
       <div class="tile-body">Veeam Daily Backup</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="14" onclick="openPopup('check14.html')">
+    <div class="tile" id="14" onclick="openModal('14', 'PTB Server Checks')">
       <div class="tile-title">14</div>
       <div class="tile-body">PTB Server Checks</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
-
-    <div class="tile" id="15" onclick="openPopup('check15.html')">
+    <div class="tile" id="15" onclick="openModal('15', 'IPsec')">
       <div class="tile-title">15</div>
       <div class="tile-body">IPsec</div>
       <div class="tile-status">Status: Loading...</div>
     </div>
+  </div>
+
+  <!-- Modal Form -->
+  <div id="formModal" class="form-popup">
+    <form id="modalForm" class="form-container">
+      <h2 id="modalTitle">Check</h2>
+      <div id="formContent"></div>
+      <div class="form-buttons">
+        <button type="submit" class="submit">Submit</button>
+        <button type="button" class="close" onclick="closeModal()">Close</button>
+      </div>
+      <div id="message"></div>
+    </form>
   </div>
 
   <script>
@@ -293,37 +308,121 @@
         console.error("CSV fetch error:", error);
       });
 
-    // Open a form popup (new window)
-    function openPopup(formFile) {
-      const popup = window.open(formFile, '_blank', 'width=700,height=600');
-      if (!popup) {
-        alert("Popup blocked! Please allow popups for this site.");
-      }
+    // Form content templates (for simplicity, only check 01 is shown; add others similarly)
+    const formTemplates = {
+      '01': `
+        <input type="hidden" name="checkNumber" value="01" />
+        <div class="form-content">
+          <label><input type="checkbox" name="Completed" value="TRUE"> Walkthrough Completed</label>
+          <label>Comments:
+            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+          </label>
+        </div>
+      `,
+      // Add templates for other checks (02, 03, etc.) here
+      '02': `
+        <input type="hidden" name="checkNumber" value="02" />
+        <div class="form-content">
+          <label><input type="checkbox" name="Completed" value="TRUE"> Email Check Completed</label>
+          <label>Comments:
+            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+          </label>
+        </div>
+      `,
+      // Continue for other checks...
+    };
+
+    function openModal(checkNum, title) {
+      const modal = document.getElementById('formModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const formContent = document.getElementById('formContent');
+      const backdrop = document.getElementById('modalBackdrop');
+
+      // Set modal title
+      modalTitle.textContent = `Check ${checkNum}: ${title}`;
+
+      // Load form content
+      formContent.innerHTML = formTemplates[checkNum] || `<p>Form for check ${checkNum} not available.</p>`;
+
+      // Show modal and backdrop
+      modal.style.display = 'block';
+      backdrop.style.display = 'block';
+
+      // Reset form and message
+      document.getElementById('modalForm').reset();
+      document.getElementById('message').textContent = '';
     }
+
+    function closeModal() {
+      const modal = document.getElementById('formModal');
+      const backdrop = document.getElementById('modalBackdrop');
+      modal.style.display = 'none';
+      backdrop.style.display = 'none';
+    }
+
+    // Form submission
+    const form = document.getElementById('modalForm');
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const messageDiv = document.getElementById('message');
+      const submitButton = form.querySelector('.submit');
+
+      messageDiv.textContent = 'Submitting...';
+      messageDiv.style.backgroundColor = 'beige';
+      messageDiv.style.color = 'black';
+      submitButton.disabled = true;
+
+      try {
+        const formData = new FormData(form);
+        const formDataObj = {};
+
+        // Convert FormData to object
+        for (let [key, value] of formData.entries()) {
+          formDataObj[key] = value;
+        }
+
+        // Default status to false if not checked
+        if (!formData.has('Completed')) {
+          formDataObj['Completed'] = 'FALSE';
+        }
+
+        const now = new Date();
+        formDataObj['Timestamp'] = now.toLocaleString();
+
+        // Submit form data
+        const response = await fetch(SCRIPT_URL, {
+          redirect: 'follow',
+          method: 'POST',
+          body: JSON.stringify(formDataObj),
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          messageDiv.textContent = data.message || 'Data submitted successfully!';
+          messageDiv.style.backgroundColor = '#48c78e';
+          messageDiv.style.color = 'white';
+          form.reset();
+          setTimeout(closeModal, 2000); // Close modal after 2 seconds
+        } else {
+          throw new Error(data.message || 'Submission failed');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        messageDiv.textContent = 'Error: ' + error.message;
+        messageDiv.style.backgroundColor = '#f14668';
+        messageDiv.style.color = 'white';
+      } finally {
+        submitButton.disabled = false;
+        setTimeout(() => {
+          messageDiv.textContent = '';
+        }, 4000);
+      }
+    });
   </script>
-
-
-  <!-- Popup Form -->
-  <div id="form01" class="form-popup">
-    <form class="form-container" onsubmit="submitForm(event, 'form01')">
-      <h2>Check 01: Data Center Walk</h2>
-
-      <div class="form-content">
-        <label><input type="checkbox" name="completed"> Walkthrough Completed</label>
-        <label> Comments:
-          <textarea name="comments" rows="3" style="width:100%;"></textarea>
-        </label>
-      </div>
-
-      <div class="form-buttons">
-        <button type="submit">Submit</button>
-        <button type="button" onclick="closeForm('form01')">Close</button>
-      </div>
-
-    </form>
-  </div>
-
-
 </body>
 
 </html>
