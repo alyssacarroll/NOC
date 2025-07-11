@@ -279,7 +279,12 @@
           if (tile) {
             if (status) tile.classList.add(status);
             const statusDiv = tile.querySelector(".tile-status");
-            if (statusDiv) statusDiv.textContent = `Status: ${status || "N/A"}`;
+            var statusName = "";
+            if (status == "true") statusName = "Complete";
+            else if (status == "false") statusName = "Incomplete";
+            else if (status == "warning") statusName = "Warning";
+            else statusName = "N/A";
+            if (statusDiv) statusDiv.textContent = `Status: ${statusName}`;
           }
         });
       })
