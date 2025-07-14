@@ -403,7 +403,86 @@
           </label>
         </div>
       `,
-      // Add templates for other checks (08 to 15) as needed
+      // Landing Pad Server Check
+      '08': `
+        <input type="hidden" name="checkNumber" value="08" />
+        <div class="form-content">
+          <label><input type="checkbox" name="Completed" value="TRUE"> Landing Pad Server Check Completed</label>
+          <label>Comments:
+            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+          </label>
+        </div>
+        `,
+      // DS File Check
+      '09': `
+        <input type="hidden" name="checkNumber" value="09" />
+        <div class="form-content">
+          <label><input type="checkbox" name="Completed" value="TRUE"> DS File Check Completed</label>
+          <label>Comments:
+            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+          </label>
+        </div>
+        `,
+      // WAVE Server Check
+      '10': `
+        <input type="hidden" name="checkNumber" value="10" />
+        <div class="form-content">
+          <label><input type="checkbox" name="Completed" value="TRUE"> WAVE Server Check Completed</label>
+          <label>Comments:
+            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+          </label>
+        </div>
+        `,
+      // Eaton Dashboard Check
+      '11': `
+        <input type="hidden" name="checkNumber" value="11" />
+        <div class="form-content">
+          <label><input type="checkbox" name="Completed" value="TRUE"> Eaton Dashboard Check Completed</label>
+          <label>Comments:
+            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+          </label>
+        </div>
+        `,
+      // InControl Check
+      '12': `
+        <input type="hidden" name="checkNumber" value="12" />
+        <div class="form-content">
+          <label><input type="checkbox" name="Completed" value="TRUE"> InControl Check Completed</label>
+          <label>Comments:
+            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+          </label>
+        </div>
+        `,
+      // Veeam Daily Backup Check
+      '13': `
+        <input type="hidden" name="checkNumber" value="13" />
+        <div class="form-content">
+          <label><input type="checkbox" name="Completed" value="TRUE"> Veeam Daily Backup Check Completed</label>
+          <label>Comments:
+            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+          </label>
+        </div>
+        `,
+      // PTB Server Checks
+      '14': `
+        <input type="hidden" name="checkNumber" value="14" />
+        <div class="form-content">
+          <label><input type="checkbox" name="Completed" value="TRUE"> PTB Server Check Completed</label>
+          <label>Comments:
+            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+          </label>
+        </div>
+        `,
+      // IPsec Check
+      '15': `
+        <input type="hidden" name="checkNumber" value="15" />
+        <div class="form-content">
+          <label><input type="checkbox" name="Completed" value="TRUE"> IPsec Check Completed</label>
+          <label>Comments:
+            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+          </label>
+        </div>
+        `,
     };
 
     function openModal(checkNum, title) {
