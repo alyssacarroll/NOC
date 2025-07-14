@@ -531,6 +531,7 @@
         }
         if (formData.has('Num 1') && formData.has('Num 2') && formData.has('Num 3') && formData.has('Num 4')) {
           formDataObj['Completed'] = 'TRUE';
+          formatDataObj['Notes'] = `Total Device Count: ${formDataObj['Num 1']}, Raw Messages: ${formDataObj['Num 2']}, Unique IMEIs: ${formDataObj['Num 3']}, Free Disk Space: ${formDataObj['Num 4']}`;
         }
 
         const now = new Date();
