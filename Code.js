@@ -107,3 +107,32 @@ function appendToGoogleSheet(data, sheet) {
   const rowData = headers.map((header) => data[header] || "");
   sheet.appendRow(rowData);
 }
+
+function resetDailyStatuses() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(DATA_ENTRY_SHEET_NAME);
+  const dataRange = sheet.getDataRange();
+  const values = dataRange.getValues();
+  const headers = values[0];
+
+  const checkCol = headers.indexOf("Check #");
+  const statusCol = headers.indexOf("Completed");
+  const notesCol = headers.indexOf("Notes");
+  const timestampCol = headers.indexOf("Timestamp");
+
+  const today = new Date().toLocaleDateString();
+
+  for (let i = 1; i < values.length; i++) {
+    const rowTimestamp = new Date(values[i][timestampCol]).toLocaleDateString();
+    const checkNum = values[i][checkCol];
+
+    // Only reset specific checks, e.g., 01, 03, 07
+    const checksToReset = ["01", "03", "07"];
+    if (!checksToReset.includes(checkNum)) continue;
+
+    if (rowTimestamp !== today) {
+      sheet.getRange(i + 1, statusCol + 1).setValue("FALSE");
+      sheet.getRange(i + 1, notesCol + 1).setValue(""); // clear notes
+      sheet.getRange(i + 1, timestampCol + 1).setValue(""); // optional
+    }
+  }
+}
