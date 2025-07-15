@@ -342,6 +342,7 @@
         localStorage.setItem("nocUserName", trimmed);
         localStorage.setItem("nocUserDate", new Date().toLocaleDateString());
         document.getElementById("userName").textContent = trimmed;
+        submitOperatorAndDate();
       }
     }
     // Attach click handler
