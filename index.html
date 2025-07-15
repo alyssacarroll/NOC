@@ -307,8 +307,9 @@
   </div>
   <!-- Maintenance Menu -->
   <div style="text-align:left; margin-top: 30px;">
-    <button id="maintenanceBtn" class="button is-small is-warning" onclick="toggleMaintenanceBox()">Maintenance</button>
-    <div id="maintenanceBox" style="display:none; margin-top: 0.5rem;">
+    <button id="messageSheetBtn" class="button is-small is-warning" onclick="toggleMessageSheetBox()">Message Metrics
+      Spreadsheet</button>
+    <div id="messageSheetBox" style="display:none; margin-top: 0.5rem;">
       <input id="spreadsheetUrlInput" class="input is-small" type="text" placeholder="Paste spreadsheet URL">
       <button class="button is-small is-success mt-1" onclick="submitSpreadsheetUrl()">Submit</button>
     </div>
@@ -408,7 +409,7 @@
     // Call this once on load
     displayCurrentDate();
 
-    function openMaintenancePrompt() {
+    function openMessageSheetPrompt() {
       const url = prompt("Enter the full URL of the new numeric data spreadsheet:");
       if (!url) return;
 
@@ -443,8 +444,8 @@
     // Initial load of tile statuses
     updateTileStatuses();
 
-    function toggleMaintenanceBox() {
-      const box = document.getElementById("maintenanceBox");
+    function toggleMessageSheetBox() {
+      const box = document.getElementById("messageSheetBox");
       box.style.display = box.style.display === "none" ? "block" : "none";
     }
 
@@ -468,7 +469,7 @@
         .then(json => {
           if (json.status === "success") {
             alert("Spreadsheet ID updated successfully!");
-            document.getElementById("maintenanceBox").style.display = "none";
+            document.getElementById("messageSheetBox").style.display = "none";
             input.value = "";
           } else {
             alert("Error: " + json.message);
@@ -679,10 +680,13 @@
       try {
         const formData = new FormData(form);
         const formDataObj = {};
-
         for (let [key, value] of formData.entries()) {
           formDataObj[key] = value;
         }
+
+        // Inject Operator name and date
+        formDataObj["Operator"] = localStorage.getItem("nocUserName") || "Unknown";
+        formDataObj["Operator Date"] = localStorage.getItem("nocUserDate") || new Date().toLocaleDateString();
 
         if (!formData.has('Completed')) {
           formDataObj['Completed'] = 'FALSE';
