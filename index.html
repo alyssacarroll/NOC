@@ -644,6 +644,35 @@
   `,
     };
 
+    async function submitOperatorAndDate() {
+      const name = localStorage.getItem("nocUserName") || "Unknown";
+      const date = new Date().toLocaleDateString(); // Format: M/D/YYYY
+
+      const payload = {
+        checkNumber: "operator-header",
+        operator: name,
+        date: date
+      };
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        if (result.status !== "success") {
+          console.error("Failed to set operator/date:", result.message);
+        }
+      } catch (err) {
+        console.error("Error submitting operator/date:", err);
+      }
+    }
+
+
     function openModal(checkNum, title) {
       const modal = document.getElementById('formModal');
       const modalTitle = document.getElementById('modalTitle');

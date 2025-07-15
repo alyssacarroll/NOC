@@ -80,7 +80,7 @@ function doPost(e) {
 
       // Fixed month-to-column mappings (start columns of each 5-col group)
       const monthColMap = {
-        0: 2, 1: 8, 2: 14, 3: 20,  4: 26,  5: 32,  // Jan (B) - Jun (AF)
+        0: 2, 1: 8, 2: 14, 3: 20, 4: 26, 5: 32,  // Jan (B) - Jun (AF)
         6: 2, 7: 8, 8: 14, 9: 20, 10: 26, 11: 32   // Jul (B) - Dec (AF)
       };
 
@@ -89,20 +89,34 @@ function doPost(e) {
 
       const targetRow = startRow + (day - 1); // Adjust for the 1-based day
 
-      dataSheet.getRange(targetRow, startCol)    .setValue(data["Total Device Count"] || "");
-      dataSheet.getRange(targetRow, startCol + 1).setValue(data["Raw Messages"]       || "");
-      dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"]       || "");
-      dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"]    || "");
+      dataSheet.getRange(targetRow, startCol).setValue(data["Total Device Count"] || "");
+      dataSheet.getRange(targetRow, startCol + 1).setValue(data["Raw Messages"] || "");
+      dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"] || "");
+      dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"] || "");
     }
+
+    if (data.checkNumber === "operator-header") {
+      const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("7/15/25"); // change to your actual sheet name
+
+      // Write to specific cells
+      sheet.getRange("C3").setValue(data.date);     // to the right of "Date:"
+      sheet.getRange("C4").setValue(data.operator); // to the right of "Operator:"
+
+      return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Header updated" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
 
     return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
       .setMimeType(ContentService.MimeType.JSON);
+
 
   } catch (err) {
     console.error(err);
     return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+
 }
 
 /**
