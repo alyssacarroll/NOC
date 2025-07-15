@@ -176,14 +176,18 @@
     }
 
     .modal-backdrop {
-      display: none;
       position: fixed;
       top: 0;
-      left: 0;
+      right: -450px;
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.5);
-      z-index: 998;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+      transition: .3s ease;
     }
   </style>
 </head>
@@ -193,16 +197,14 @@
   <h1>NOC Dashboard</h1>
   <div class="tile-grid" id="tileGrid"></div>
 
-  <button class="button is-warning" onclick="openMaintenance()">Maintenance</button>
-
   <!-- Maintenance Menu -->
-  <div class="navbar is-light">
-    <div class="navbar-menu">
-      <div class="navbar-start">
-        <a class="navbar-item" onclick="openMaintenancePrompt()">Maintenance</a>
-      </div>
-    </div>
+<div style="position: absolute; top: 1rem; right: 1rem;">
+  <button id="maintenanceBtn" class="button is-small is-warning" onclick="toggleMaintenanceBox()">Maintenance</button>
+  <div id="maintenanceBox" style="display:none; margin-top: 0.5rem;">
+    <input id="spreadsheetUrlInput" class="input is-small" type="text" placeholder="Paste spreadsheet URL">
+    <button class="button is-small is-success mt-1" onclick="submitSpreadsheetUrl()">Submit</button>
   </div>
+</div>
 
   <!-- Row One -->
   <div class="tile-grid">
@@ -390,163 +392,204 @@
     // Initial load of tile statuses
     updateTileStatuses();
 
+    function toggleMaintenanceBox() {
+      const box = document.getElementById("maintenanceBox");
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+
+    function submitSpreadsheetUrl() {
+      const input = document.getElementById("spreadsheetUrlInput");
+      const url = input.value.trim();
+      const match = url.match(/[-\w]{25,}/);
+      if (!match) {
+        alert("Invalid spreadsheet URL.");
+        return;
+      }
+
+      const newId = match[0];
+
+      fetch("/?action=updateSpreadsheetId", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ newSpreadsheetId: newId })
+      })
+        .then(res => res.json())
+        .then(json => {
+          if (json.status === "success") {
+            alert("Spreadsheet ID updated successfully!");
+            document.getElementById("maintenanceBox").style.display = "none";
+            input.value = "";
+          } else {
+            alert("Error: " + json.message);
+          }
+        })
+        .catch(err => {
+          alert("Failed to update: " + err.message);
+        });
+    }
+
+
     // Form content templates
     const formTemplates = {
       // Data Center Walkthrough Check
       '01': `
-        <input type="hidden" name="checkNumber" value="01" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE"> Walkthrough Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-          </label>
-        </div>
-      `,
+  <input type="hidden" name="checkNumber" value="01" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> Walkthrough Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // Tech Support Email Check
       '02': `
-        <input type="hidden" name="checkNumber" value="02" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE"> Email Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-          </label>
-        </div>
-      `,
+  <input type="hidden" name="checkNumber" value="02" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> Email Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // VPN TAK & WAVE Check
       '03': `
-        <input type="hidden" name="checkNumber" value="03" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="2" style="width:100%;"></textarea>
-          </label>
-        </div>
-      `,
+  <input type="hidden" name="checkNumber" value="03" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="2" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // WUG Check
       '04': `
-        <input type="hidden" name="checkNumber" value="04" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="2" style="width:100%;"></textarea>
-          </label>
-        </div>
-      `,
+  <input type="hidden" name="checkNumber" value="04" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="2" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // TAK Server Federation Check
       '05': `
-        <input type="hidden" name="checkNumber" value="05" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="2" style="width:100%;"></textarea>
-          </label>
-        </div>
-      `,
+  <input type="hidden" name="checkNumber" value="05" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="2" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // PTL Check
       '06': `
-        <input type="hidden" name="checkNumber" value="06" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="2" style="width:100%;"></textarea>
-          </label>
-        </div>
-      `,
+  <input type="hidden" name="checkNumber" value="06" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="2" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // Message Check
       '07': `
-        <input type="hidden" name="checkNumber" value="07" />
-        <div class="form-content">
-          
-          <label style="padding-top: 10px;">Data:
-            <div align="center" style="display: flex; gap: 20px; justify-content: center; padding-top: 10px;">
-              <textarea name="Total Device Count" rows="1" placeholder="Total Device Count" style="width:21%; font-size:0.80rem;"></textarea>
-              <textarea name="Raw Messages" rows="1" placeholder="Raw Messages"       style="width:21%; font-size:0.80rem;"></textarea>
-              <textarea name="Unique IMEIs" rows="1" placeholder="Unique IMEIs"       style="width:21%; font-size:0.80rem;"></textarea>
-              <textarea name="Free Disk Space" rows="1" placeholder="Free Disk Space"    style="width:21%; font-size:0.80rem;"></textarea>
-            </div>
-          </label>
-        </div>
-      `,
+  <input type="hidden" name="checkNumber" value="07" />
+  <div class="form-content">
+
+    <label style="padding-top: 10px;">Data:
+      <div align="center" style="display: flex; gap: 20px; justify-content: center; padding-top: 10px;">
+        <textarea name="Total Device Count" rows="1" placeholder="Total Device Count"
+          style="width:21%; font-size:0.80rem;"></textarea>
+        <textarea name="Raw Messages" rows="1" placeholder="Raw Messages"
+          style="width:21%; font-size:0.80rem;"></textarea>
+        <textarea name="Unique IMEIs" rows="1" placeholder="Unique IMEIs"
+          style="width:21%; font-size:0.80rem;"></textarea>
+        <textarea name="Free Disk Space" rows="1" placeholder="Free Disk Space"
+          style="width:21%; font-size:0.80rem;"></textarea>
+      </div>
+    </label>
+  </div>
+  `,
       // Landing Pad Server Check
       '08': `
-        <input type="hidden" name="checkNumber" value="08" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE"> Landing Pad Server Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-          </label>
-        </div>
-        `,
+  <input type="hidden" name="checkNumber" value="08" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> Landing Pad Server Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // DS File Check
       '09': `
-        <input type="hidden" name="checkNumber" value="09" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE"> DS File Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-          </label>
-        </div>
-        `,
+  <input type="hidden" name="checkNumber" value="09" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> DS File Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // WAVE Server Check
       '10': `
-        <input type="hidden" name="checkNumber" value="10" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE"> WAVE Server Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-          </label>
-        </div>
-        `,
+  <input type="hidden" name="checkNumber" value="10" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> WAVE Server Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // Eaton Dashboard Check
       '11': `
-        <input type="hidden" name="checkNumber" value="11" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE"> Eaton Dashboard Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-          </label>
-        </div>
-        `,
+  <input type="hidden" name="checkNumber" value="11" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> Eaton Dashboard Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // InControl Check
       '12': `
-        <input type="hidden" name="checkNumber" value="12" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE"> InControl Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-          </label>
-        </div>
-        `,
+  <input type="hidden" name="checkNumber" value="12" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> InControl Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // Veeam Daily Backup Check
       '13': `
-        <input type="hidden" name="checkNumber" value="13" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE"> Veeam Daily Backup Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-          </label>
-        </div>
-        `,
+  <input type="hidden" name="checkNumber" value="13" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> Veeam Daily Backup Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // PTB Server Checks
       '14': `
-        <input type="hidden" name="checkNumber" value="14" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE"> PTB Server Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-          </label>
-        </div>
-        `,
+  <input type="hidden" name="checkNumber" value="14" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> PTB Server Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
       // IPsec Check
       '15': `
-        <input type="hidden" name="checkNumber" value="15" />
-        <div class="form-content">
-          <label><input type="checkbox" name="Completed" value="TRUE"> IPsec Check Completed</label>
-          <label>Comments:
-            <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-          </label>
-        </div>
-        `,
+  <input type="hidden" name="checkNumber" value="15" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> IPsec Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
     };
 
     function openModal(checkNum, title) {
@@ -593,9 +636,11 @@
         if (!formData.has('Completed')) {
           formDataObj['Completed'] = 'FALSE';
         }
-        if (formData.has('Total Device Count') && formData.has('Raw Messages') && formData.has('Unique IMEIs') && formData.has('Free Disk Space')) {
+        if (formData.has('Total Device Count') && formData.has('Raw Messages') && formData.has('Unique IMEIs') &&
+          formData.has('Free Disk Space')) {
           formDataObj['Completed'] = 'TRUE';
-          formDataObj['Notes'] = `Total Device Count: ${formDataObj['Total Device Count']}, Raw Messages: ${formDataObj['Raw Messages']}, Unique IMEIs: ${formDataObj['Unique IMEIs']}, Free Disk Space: ${formDataObj['Free Disk Space']}`;
+          formDataObj['Notes'] = `Total Device Count: ${formDataObj['Total Device Count']}, Raw Messages: ${formDataObj['Raw
+  Messages']}, Unique IMEIs: ${formDataObj['Unique IMEIs']}, Free Disk Space: ${formDataObj['Free Disk Space']}`;
         }
 
         const now = new Date();
@@ -617,10 +662,10 @@
           messageDiv.style.backgroundColor = '#48c78e';
           messageDiv.style.color = 'white';
           form.reset();
-          setTimeout(() => {      // Close modal after a short delay
+          setTimeout(() => { // Close modal after a short delay
             closeModal();
             updateTileStatuses(); // Refresh tile statuses after submission
-          }, 500);                // 500ms delay
+          }, 500); // 500ms delay
         } else {
           throw new Error(data.message || 'Submission failed');
         }
