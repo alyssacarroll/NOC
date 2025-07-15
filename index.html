@@ -193,6 +193,21 @@
   <h1>NOC Dashboard</h1>
   <div class="tile-grid" id="tileGrid"></div>
 
+  <button class="button is-warning" onclick="openMaintenance()">Maintenance</button>
+
+  <!-- Maintenance Menu -->
+  <div id="maintenanceModal" class="modal">
+    <div class="modal-background" onclick="closeMaintenance()"></div>
+    <div class="modal-content box">
+      <h3 class="title is-5">Update Secondary Spreadsheet</h3>
+      <input class="input" type="text" id="newSheetUrl" placeholder="Paste full spreadsheet URL or ID here">
+      <br><br>
+      <button class="button is-primary" onclick="submitNewSpreadsheetId()">Save</button>
+      <button class="button is-light" onclick="closeMaintenance()">Cancel</button>
+    </div>
+    <button class="modal-close is-large" aria-label="close" onclick="closeMaintenance()"></button>
+  </div>
+
   <!-- Row One -->
   <div class="tile-grid">
     <div class="tile" id="01" onclick="openModal('01', 'Data Center Walk')">
@@ -346,6 +361,38 @@
 
     // Initial load of tile statuses
     updateTileStatuses();
+
+    // maintenance modal functions
+    function openMaintenance() {
+      document.getElementById("maintenanceModal").classList.add("is-active");
+    }
+
+    function closeMaintenance() {
+      document.getElementById("maintenanceModal").classList.remove("is-active");
+    }
+
+    function submitNewSpreadsheetId() {
+      const input = document.getElementById("newSheetUrl").value;
+      const idMatch = input.match(/[-\w]{25,}/);
+      if (!idMatch) {
+        alert("Invalid URL or ID. Please try again.");
+        return;
+      }
+      const id = idMatch[0];
+
+      fetch('/saveSpreadsheetId', {
+        method: 'POST',
+        body: JSON.stringify({ newId: id }),
+        contentType: 'application/json'
+      }).then(res => res.json())
+        .then(data => {
+          alert(data.message || "Spreadsheet ID updated!");
+          closeMaintenance();
+        })
+        .catch(err => {
+          alert("Error saving spreadsheet ID: " + err.message);
+        });
+    }
 
     // Form content templates
     const formTemplates = {
