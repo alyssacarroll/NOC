@@ -198,15 +198,6 @@
   <h1>NOC Dashboard</h1>
   <div class="tile-grid" id="tileGrid"></div>
 
-  <!-- Maintenance Menu -->
-  <div style="position: absolute; top: 1rem; right: 1rem;">
-    <button id="maintenanceBtn" class="button is-small is-warning" onclick="toggleMaintenanceBox()">Maintenance</button>
-    <div id="maintenanceBox" style="display:none; margin-top: 0.5rem;">
-      <input id="spreadsheetUrlInput" class="input is-small" type="text" placeholder="Paste spreadsheet URL">
-      <button class="button is-small is-success mt-1" onclick="submitSpreadsheetUrl()">Submit</button>
-    </div>
-  </div>
-
   <!-- Row One -->
   <div class="tile-grid">
     <div class="tile" id="01" onclick="openModal('01', 'Data Center Walk')">
@@ -307,7 +298,14 @@
       <div id="message"></div>
     </form>
   </div>
-
+  <!-- Maintenance Menu -->
+  <div style="text-align:left; margin-top: 30px;">
+    <button id="maintenanceBtn" class="button is-small is-warning" onclick="toggleMaintenanceBox()">Maintenance</button>
+    <div id="maintenanceBox" style="display:none; margin-top: 0.5rem;">
+      <input id="spreadsheetUrlInput" class="input is-small" type="text" placeholder="Paste spreadsheet URL">
+      <button class="button is-small is-success mt-1" onclick="submitSpreadsheetUrl()">Submit</button>
+    </div>
+  </div>
   <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRVOcAqswtmyk_vtsIiOeBy6zwv_jT4pxx_UOBlcsr-n4cxa0PnFluIvTP_E9yXk3nCB-SLWi_cOSiW/pub?output=csv";
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuQKu1YOgZvkhwhnOTdqAEnUMFCm7SkKziz6iqAU3YF4eyjHKglIONFgYLkMFo6X6-Tw/exec";
@@ -640,7 +638,7 @@
         if (formData.has('Total Device Count') && formData.has('Raw Messages') && formData.has('Unique IMEIs') &&
           formData.has('Free Disk Space')) {
           formDataObj['Completed'] = 'TRUE';
-          formDataObj['Notes'] = 
+          formDataObj['Notes'] =
             `Total Device Count: ${formDataObj['Total Device Count']},
             Raw Messages: ${formDataObj['Raw Messages']},
             Unique IMEIs: ${formDataObj['Unique IMEIs']},
