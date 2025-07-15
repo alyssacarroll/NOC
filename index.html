@@ -200,6 +200,7 @@
     <span id="userNameDisplay" style="font-size: 1rem; cursor: pointer;">
       <span><strong>Operator: </strong> <span id="userName">User</span> ✎</span>
     </span>
+    <div id="currentDate" style="font-size: 0.9rem; color: lightgray; margin-top: 0.2rem;"></div>
   </div>
   <h1>NOC Dashboard</h1>
   <div class="tile-grid" id="tileGrid"></div>
@@ -315,6 +316,7 @@
   <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRVOcAqswtmyk_vtsIiOeBy6zwv_jT4pxx_UOBlcsr-n4cxa0PnFluIvTP_E9yXk3nCB-SLWi_cOSiW/pub?output=csv";
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuQKu1YOgZvkhwhnOTdqAEnUMFCm7SkKziz6iqAU3YF4eyjHKglIONFgYLkMFo6X6-Tw/exec";
+    const today = new Date().toLocaleDateString();
 
     // ========== USER NAME HANDLING ==========
     function loadUserName() {
@@ -345,10 +347,8 @@
             const [checkNum, statusRaw, notes, timestamp] = row.split(",");
             const status = statusRaw?.trim().toLowerCase();
             const tileId = `${checkNum.padStart(2, "0")}`;
-            const today = new Date().toLocaleDateString();
             const timestampDate = new Date(timestamp).toLocaleDateString();
             const isOnHold = notes?.toLowerCase().includes("on hold");
-
             const tile = document.getElementById(tileId);
             if (tile) {
               // Remove previous status classes
@@ -380,6 +380,21 @@
           console.error("CSV fetch error:", error);
         });
     }
+
+    function displayCurrentDate() {
+      const now = new Date();
+      const formatted = now.toLocaleDateString(undefined, {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+      document.getElementById('currentDate').textContent = formatted;
+    }
+
+
+    // Call this once on load
+    displayCurrentDate();
 
     function openMaintenancePrompt() {
       const url = prompt("Enter the full URL of the new numeric data spreadsheet:");
