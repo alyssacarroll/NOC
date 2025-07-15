@@ -316,301 +316,241 @@
       <button class="button is-small is-success mt-1" onclick="submitSpreadsheetUrl()">Submit</button>
     </div>
   </div>
+
+
+  <script src="formTemplates.js"></script>
   <script>
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRVOcAqswtmyk_vtsIiOeBy6zwv_jT4pxx_UOBlcsr-n4cxa0PnFluIvTP_E9yXk3nCB-SLWi_cOSiW/pub?output=csv";
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuQKu1YOgZvkhwhnOTdqAEnUMFCm7SkKziz6iqAU3YF4eyjHKglIONFgYLkMFo6X6-Tw/exec";
-    const today = new Date().toLocaleDateString();
+    (() => {
+      const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRVOcAqswtmyk_vtsIiOeBy6zwv_jT4pxx_UOBlcsr-n4cxa0PnFluIvTP_E9yXk3nCB-SLWi_cOSiW/pub?output=csv";
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuQKu1YOgZvkhwhnOTdqAEnUMFCm7SkKziz6iqAU3YF4eyjHKglIONFgYLkMFo6X6-Tw/exec";
 
-    // ========== USER NAME HANDLING ==========
-    function loadUserName() {
-      const savedDate = localStorage.getItem("nocUserDate");
-      const today = new Date().toLocaleDateString();
-
-      if (savedDate !== today) {
-        // New day, clear stored name
-        localStorage.removeItem("nocUserName");
-        localStorage.setItem("nocUserDate", today);
-        document.getElementById("userName").textContent = "Operator";
-      } else {
-        const savedName = localStorage.getItem("nocUserName") || "Operator";
-        document.getElementById("userName").textContent = savedName;
+      // ------- Utilities --------
+      function formatDate(date = new Date()) {
+        return date.toLocaleDateString(undefined, {
+          weekday: 'short',
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
       }
-    }
-    function promptUserNameChange() {
-      const current = document.getElementById("userName").textContent;
-      const name = prompt("Enter your name:", current);
-      if (name) {
-        const trimmed = name.trim();
-        localStorage.setItem("nocUserName", trimmed);
-        localStorage.setItem("nocUserDate", new Date().toLocaleDateString());
-        document.getElementById("userName").textContent = trimmed;
-        submitOperatorAndDate();
-      }
-    }
-    // Attach click handler
-    document.addEventListener("DOMContentLoaded", () => {
-      loadUserName();
-      document.getElementById("userNameDisplay").addEventListener("click", promptUserNameChange);
-    });
 
-    // Function to update tile statuses
-    function updateTileStatuses() {
-      fetch(CSV_URL)
-        .then(response => response.text())
-        .then(data => {
-          const rows = data.trim().split("\n").slice(1); // Skip header
-          rows.forEach(row => {
-            const [checkNum, statusRaw, notes, timestamp] = row.split(",");
-            const status = statusRaw?.trim().toLowerCase();
-            const tileId = `${checkNum.padStart(2, "0")}`;
-            const timestampDate = new Date(timestamp).toLocaleDateString();
-            const isOnHold = notes?.toLowerCase().includes("on hold");
-            const tile = document.getElementById(tileId);
-            if (tile) {
-              // Remove previous status classes
-              tile.classList.remove('true', 'false', 'bad', 'warning');
+      function fetchJson(url, options) {
+        return fetch(url, options).then(res => res.json());
+      }
+
+      // -------- USER NAME HANDLING ---------
+      function loadUserName() {
+        const savedDate = localStorage.getItem("nocUserDate");
+        const todayStr = new Date().toLocaleDateString();
+
+        if (savedDate !== todayStr) {
+          localStorage.removeItem("nocUserName");
+          localStorage.setItem("nocUserDate", todayStr);
+          setUserNameDisplay("Operator");
+        } else {
+          setUserNameDisplay(localStorage.getItem("nocUserName") || "Operator");
+        }
+      }
+
+      function setUserNameDisplay(name) {
+        document.getElementById("userName").textContent = name;
+      }
+
+      function promptUserNameChange() {
+        const current = document.getElementById("userName").textContent;
+        const name = prompt("Enter your name:", current);
+        if (name) {
+          const trimmed = name.trim();
+          localStorage.setItem("nocUserName", trimmed);
+          localStorage.setItem("nocUserDate", new Date().toLocaleDateString());
+          setUserNameDisplay(trimmed);
+          submitOperatorAndDate();
+        }
+      }
+
+      // ------ Tile Status Updates ------
+      function clearTileStatusClasses(tile) {
+        tile.classList.remove('true', 'false', 'bad', 'warning');
+      }
+
+      function updateTileStatuses() {
+        fetch(CSV_URL)
+          .then(res => res.text())
+          .then(csv => {
+            const rows = csv.trim().split('\n').slice(1); // skip header
+            const todayStr = new Date().toLocaleDateString();
+
+            rows.forEach(row => {
+              const [checkNum, statusRaw, notes, timestamp] = row.split(",");
+              const status = statusRaw?.trim().toLowerCase();
+              const tileId = checkNum.padStart(2, "0");
+              const timestampDate = new Date(timestamp).toLocaleDateString();
+              const isOnHold = notes?.toLowerCase().includes("on hold");
+              const tile = document.getElementById(tileId);
+
+              if (!tile) return;
+
+              clearTileStatusClasses(tile);
 
               const statusDiv = tile.querySelector(".tile-status");
 
-              // On Hold check (must happen BEFORE applying other statuses)
-              if (isOnHold && timestampDate === today) {
+              if (isOnHold && timestampDate === todayStr) {
                 tile.classList.add("warning");
                 if (statusDiv) statusDiv.textContent = "Status: On Hold";
                 return;
               }
 
-              // Add new status class
               if (status) tile.classList.add(status);
-              let statusName = "";
+
+              let statusName = "N/A";
               if (status === "true") statusName = "Complete";
               else if (status === "false") statusName = "Incomplete";
               else if (status === "warning") statusName = "Warning";
               else if (status === "bad") statusName = "Error";
-              else statusName = "N/A";
+
               if (statusDiv) statusDiv.textContent = `Status: ${statusName}`;
-            }
+            });
+          })
+          .catch(console.error);
+      }
 
+      // ------- Display Current Date -----
+      function displayCurrentDate() {
+        document.getElementById('currentDate').textContent = formatDate();
+      }
+
+      // ------- Submit Operator + Date -------
+      async function submitOperatorAndDate() {
+        const name = localStorage.getItem("nocUserName") || "Unknown";
+        const date = new Date().toLocaleDateString();
+
+        const payload = {
+          checkNumber: "operator-header",
+          operator: name,
+          date: date
+        };
+
+        try {
+          const result = await fetchJson(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
           });
-        })
-        .catch(error => {
-          console.error("CSV fetch error:", error);
-        });
-    }
 
-    function displayCurrentDate() {
-      const now = new Date();
-      const formatted = now.toLocaleDateString(undefined, {
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-      document.getElementById('currentDate').textContent = formatted;
-    }
-
-
-    // Call this once on load
-    displayCurrentDate();
-
-    function openMessageSheetPrompt() {
-      const url = prompt("Enter the full URL of the new numeric data spreadsheet:");
-      if (!url) return;
-
-      const match = url.match(/[-\w]{25,}/);
-      if (!match) {
-        alert("Invalid spreadsheet URL.");
-        return;
-      }
-
-      const newId = match[0];
-
-      fetch("/?action=updateSpreadsheetId", {
-        method: "POST",
-        body: JSON.stringify({ newSpreadsheetId: newId }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-        .then(res => res.json())
-        .then(json => {
-          if (json.status === "success") {
-            alert("Spreadsheet ID updated successfully!");
-          } else {
-            alert("Error: " + json.message);
+          if (result.status !== "success") {
+            console.error("Failed to set operator/date:", result.message);
           }
-        })
-        .catch(err => {
-          alert("Failed to update: " + err.message);
-        });
-    }
-
-    // Initial load of tile statuses
-    updateTileStatuses();
-
-    function toggleMessageSheetBox() {
-      const box = document.getElementById("messageSheetBox");
-      box.style.display = box.style.display === "none" ? "block" : "none";
-    }
-
-    function submitSpreadsheetUrl() {
-      const input = document.getElementById("spreadsheetUrlInput");
-      const url = input.value.trim();
-      const match = url.match(/[-\w]{25,}/);
-      if (!match) {
-        alert("Invalid spreadsheet URL.");
-        return;
+        } catch (err) {
+          console.error("Error submitting operator/date:", err);
+        }
       }
 
-      const newId = match[0];
+      // --------- Modal Handlers ---------
+      function openModal(checkNum, title) {
+        const modal = document.getElementById('formModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const formContent = document.getElementById('formContent');
+        const backdrop = document.getElementById('modalBackdrop');
 
-      fetch("/?action=updateSpreadsheetId", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newSpreadsheetId: newId })
-      })
-        .then(res => res.json())
-        .then(json => {
-          if (json.status === "success") {
-            alert("Spreadsheet ID updated successfully!");
-            document.getElementById("messageSheetBox").style.display = "none";
-            input.value = "";
-          } else {
-            alert("Error: " + json.message);
+        modalTitle.textContent = `Check ${checkNum}: ${title}`;
+        formContent.innerHTML = formTemplates[checkNum] || `<p>Form for check ${checkNum} not available.</p>`;
+        modal.style.display = 'block';
+        backdrop.style.display = 'block';
+
+        const form = document.getElementById('modalForm');
+        form.reset();
+        document.getElementById('message').textContent = '';
+      }
+
+      function closeModal() {
+        document.getElementById('formModal').style.display = 'none';
+        document.getElementById('modalBackdrop').style.display = 'none';
+      }
+
+      // ------ Form Submission ---------
+      async function handleFormSubmit(e) {
+        e.preventDefault();
+        const messageDiv = document.getElementById('message');
+        const submitButton = e.target.querySelector('.submit');
+
+        messageDiv.textContent = 'Submitting...';
+        messageDiv.style.backgroundColor = 'beige';
+        messageDiv.style.color = 'black';
+        submitButton.disabled = true;
+
+        try {
+          const formData = new FormData(e.target);
+          const formDataObj = Object.fromEntries(formData.entries());
+
+          // Inject operator info
+          formDataObj["Operator"] = localStorage.getItem("nocUserName") || "Unknown";
+          formDataObj["Operator Date"] = localStorage.getItem("nocUserDate") || new Date().toLocaleDateString();
+
+          if (!formData.has('Completed')) {
+            formDataObj['Completed'] = 'FALSE';
           }
-        })
-        .catch(err => {
-          alert("Failed to update: " + err.message);
-        });
-    }
 
+          if (
+            formData.has('Total Device Count') &&
+            formData.has('Raw Messages') &&
+            formData.has('Unique IMEIs') &&
+            formData.has('Free Disk Space')
+          ) {
+            formDataObj['Completed'] = 'TRUE';
+            formDataObj['Notes'] =
+              `Total Device Count: ${formDataObj['Total Device Count']},
+          Raw Messages: ${formDataObj['Raw Messages']},
+          Unique IMEIs: ${formDataObj['Unique IMEIs']},
+          Free Disk Space: ${formDataObj['Free Disk Space']}`;
+          }
 
-    // Form content templates
-    
+          formDataObj['Timestamp'] = new Date().toLocaleString();
 
-    async function submitOperatorAndDate() {
-      const name = localStorage.getItem("nocUserName") || "Unknown";
-      const date = new Date().toLocaleDateString(); // Format: M/D/YYYY
+          const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(formDataObj)
+          });
 
-      const payload = {
-        checkNumber: "operator-header",
-        operator: name,
-        date: date
-      };
+          const data = await response.json();
 
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-        if (result.status !== "success") {
-          console.error("Failed to set operator/date:", result.message);
-        }
-      } catch (err) {
-        console.error("Error submitting operator/date:", err);
-      }
-    }
-
-
-    function openModal(checkNum, title) {
-      const modal = document.getElementById('formModal');
-      const modalTitle = document.getElementById('modalTitle');
-      const formContent = document.getElementById('formContent');
-      const backdrop = document.getElementById('modalBackdrop');
-
-      modalTitle.textContent = `Check ${checkNum}: ${title}`;
-      formContent.innerHTML = formTemplates[checkNum] || `<p>Form for check ${checkNum} not available.</p>`;
-      modal.style.display = 'block';
-      backdrop.style.display = 'block';
-      document.getElementById('modalForm').reset();
-      document.getElementById('message').textContent = '';
-    }
-
-    function closeModal() {
-      const modal = document.getElementById('formModal');
-      const backdrop = document.getElementById('modalBackdrop');
-      modal.style.display = 'none';
-      backdrop.style.display = 'none';
-    }
-
-    // Form submission
-    const form = document.getElementById('modalForm');
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const messageDiv = document.getElementById('message');
-      const submitButton = form.querySelector('.submit');
-
-      messageDiv.textContent = 'Submitting...';
-      messageDiv.style.backgroundColor = 'beige';
-      messageDiv.style.color = 'black';
-      submitButton.disabled = true;
-
-      try {
-        const formData = new FormData(form);
-        const formDataObj = {};
-        for (let [key, value] of formData.entries()) {
-          formDataObj[key] = value;
-        }
-
-        // Inject Operator name and date
-        formDataObj["Operator"] = localStorage.getItem("nocUserName") || "Unknown";
-        formDataObj["Operator Date"] = localStorage.getItem("nocUserDate") || new Date().toLocaleDateString();
-
-        if (!formData.has('Completed')) {
-          formDataObj['Completed'] = 'FALSE';
-        }
-        if (formData.has('Total Device Count') && formData.has('Raw Messages') && formData.has('Unique IMEIs') &&
-          formData.has('Free Disk Space')) {
-          formDataObj['Completed'] = 'TRUE';
-          formDataObj['Notes'] =
-            `Total Device Count: ${formDataObj['Total Device Count']},
-            Raw Messages: ${formDataObj['Raw Messages']},
-            Unique IMEIs: ${formDataObj['Unique IMEIs']},
-            Free Disk Space: ${formDataObj['Free Disk Space']}`;
-        }
-
-        const now = new Date();
-        formDataObj['Timestamp'] = now.toLocaleString();
-
-        const response = await fetch(SCRIPT_URL, {
-          redirect: 'follow',
-          method: 'POST',
-          body: JSON.stringify(formDataObj),
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
-          },
-        });
-
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          messageDiv.textContent = data.message || 'Data submitted successfully!';
-          messageDiv.style.backgroundColor = '#48c78e';
+          if (data.status === 'success') {
+            messageDiv.textContent = data.message || 'Data submitted successfully!';
+            messageDiv.style.backgroundColor = '#48c78e';
+            messageDiv.style.color = 'white';
+            e.target.reset();
+            setTimeout(() => {
+              closeModal();
+              updateTileStatuses();
+            }, 500);
+          } else {
+            throw new Error(data.message || 'Submission failed');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          messageDiv.textContent = 'Error: ' + error.message;
+          messageDiv.style.backgroundColor = '#f14668';
           messageDiv.style.color = 'white';
-          form.reset();
-          setTimeout(() => { // Close modal after a short delay
-            closeModal();
-            updateTileStatuses(); // Refresh tile statuses after submission
-          }, 500); // 500ms delay
-        } else {
-          throw new Error(data.message || 'Submission failed');
+        } finally {
+          submitButton.disabled = false;
+          setTimeout(() => (messageDiv.textContent = ''), 4000);
         }
-      } catch (error) {
-        console.error('Error:', error);
-        messageDiv.textContent = 'Error: ' + error.message;
-        messageDiv.style.backgroundColor = '#f14668';
-        messageDiv.style.color = 'white';
-      } finally {
-        submitButton.disabled = false;
-        setTimeout(() => {
-          messageDiv.textContent = '';
-        }, 4000);
       }
-    });
+
+      // -------- Initialization --------
+      document.addEventListener("DOMContentLoaded", () => {
+        loadUserName();
+        displayCurrentDate();
+        updateTileStatuses();
+
+        document.getElementById("userNameDisplay").addEventListener("click", promptUserNameChange);
+        document.getElementById('modalForm').addEventListener('submit', handleFormSubmit);
+      });
+
+      // Expose to global (if needed)
+      window.openModal = openModal;
+      window.closeModal = closeModal;
+    })();
   </script>
 </body>
 
