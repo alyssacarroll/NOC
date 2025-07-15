@@ -2,17 +2,18 @@ const DATA_ENTRY_SHEET_NAME = "Sheet1";
 const TIME_STAMP_COLUMN_NAME = "Timestamp";
 const FOLDER_ID = "NOC";
 // secondary file upload
-const NUMERIC_LOG_SHEET_NAME = 'DataEntry'; // Sheet name in the secondary spreadsheet
+const NUMERIC_LOG_SHEET_NAME = 'DataEntry'; // Sheet name in the message metrics spreadsheet
+const DAILY_CHECKS_SPREADSHEET_ID = "1JwpraepmuSFGlhmcv8LwT_L7xVwCDcqi4MU4Rje7NvQ"; // ID of the target spreadsheet for daily checks
 // == CONFIGURATION END ==
 
 /**
- * Gets the ID of the secondary spreadsheet.
- * @returns {string} Secondary spreadsheet ID
+ * Gets the ID of the Message Metrics spreadsheet.
+ * @returns {string} Message Metrics spreadsheet ID
  */
-function getSecondarySpreadsheetId() {
+function getMessageMetricsSpreadsheetId() {
   const configSheet = getOrCreateConfigSheet();
   const id = configSheet.getRange('B1').getValue();
-  if (!id) throw new Error('No secondary spreadsheet ID set in Config sheet.');
+  if (!id) throw new Error('No Message Metrics spreadsheet ID set in Config sheet.');
   return id;
 }
 
@@ -96,15 +97,27 @@ function doPost(e) {
     }
 
     if (data.checkNumber === "operator-header") {
-      const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("7/15/25"); // change to your actual sheet name
+      const ss = SpreadsheetApp.openById(DAILY_CHECKS_SPREADSHEET_ID);
+      const todaySheetName = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "M/d/yy"); // e.g. "7/15/25"
+      const sheet = ss.getSheetByName(todaySheetName);
 
-      // Write to specific cells
-      sheet.getRange("C3").setValue(data.date);     // to the right of "Date:"
-      sheet.getRange("C4").setValue(data.operator); // to the right of "Operator:"
+      if (!sheet) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "error",
+          message: "Sheet with today's date not found: " + todaySheetName
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
 
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Header updated" }))
-        .setMimeType(ContentService.MimeType.JSON);
+      // Write values
+      sheet.getRange("C3").setValue(data.date);     // right of "Date:"
+      sheet.getRange("C4").setValue(data.operator); // right of "Operator:"
+
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "Operator and date written to Daily Checks sheet"
+      })).setMimeType(ContentService.MimeType.JSON);
     }
+
 
 
     return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
