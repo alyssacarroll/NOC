@@ -1,4 +1,3 @@
-
 const DATA_ENTRY_SHEET_NAME = "Sheet1";
 const TIME_STAMP_COLUMN_NAME = "Timestamp";
 const FOLDER_ID = "NOC";
@@ -17,8 +16,30 @@ function getSecondarySpreadsheetId() {
   return id;
 }
 
+function getOrCreateConfigSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('Config');
+  if (!sheet) {
+    sheet = ss.insertSheet('Config');
+    sheet.getRange('A1').setValue('Secondary Spreadsheet ID');
+  }
+  return sheet;
+}
+
 function doPost(e) {
   try {
+    if (e.parameter && e.parameter.action === 'saveSpreadsheetId') {
+      const data = JSON.parse(e.postData.contents);
+      const newId = data.newId;
+      if (!newId) throw new Error("Missing spreadsheet ID.");
+
+      const configSheet = getOrCreateConfigSheet();
+      configSheet.getRange('B1').setValue(newId);
+
+      return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "ID saved." }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     const data = JSON.parse(e.postData.contents);
     const checkNumber = data.checkNumber;
 
@@ -156,5 +177,3 @@ function resetDailyStatuses() {
     }
   }
 }
-
-
