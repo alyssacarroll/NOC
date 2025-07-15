@@ -2,10 +2,20 @@
 const DATA_ENTRY_SHEET_NAME = "Sheet1";
 const TIME_STAMP_COLUMN_NAME = "Timestamp";
 const FOLDER_ID = "NOC";
-// for secondary file upload
-const SECOND_SPREADSHEET_ID = "1UjBuFvI3clazaZxQbKYNExOWIdp8t_2jF9Dz3SaEvDQ";
+// secondary file upload
 const NUMERIC_LOG_SHEET_NAME = 'DataEntry'; // Sheet name in the secondary spreadsheet
 // == CONFIGURATION END ==
+
+/**
+ * Gets the ID of the secondary spreadsheet.
+ * @returns {string} Secondary spreadsheet ID
+ */
+function getSecondarySpreadsheetId() {
+  const configSheet = getOrCreateConfigSheet();
+  const id = configSheet.getRange('B1').getValue();
+  if (!id) throw new Error('No secondary spreadsheet ID set in Config sheet.');
+  return id;
+}
 
 function doPost(e) {
   try {
@@ -42,26 +52,15 @@ function doPost(e) {
 
     // Special handling for Check 07: append numeric data to second sheet
     if (checkNumber === '07') {
-      const dataSheet = SpreadsheetApp.openById(SECOND_SPREADSHEET_ID).getSheetByName(NUMERIC_LOG_SHEET_NAME);
+      const dataSheet = SpreadsheetApp.openById(getSecondarySpreadsheetId()).getSheetByName(NUMERIC_LOG_SHEET_NAME);
       const now = new Date();
-
       const monthIndex = now.getMonth(); // 0 = Jan, ..., 11 = Dec
       const day = now.getDate(); // 1–31
 
       // Fixed month-to-column mappings (start columns of each 5-col group)
       const monthColMap = {
-        0: 2,   // Jan (B)
-        1: 8,   // Feb (H)
-        2: 14,  // Mar (N)
-        3: 20,  // Apr (T)
-        4: 26,  // May (Z)
-        5: 32,  // Jun (AF)
-        6: 2,   // Jul (B)
-        7: 8,   // Aug (H)
-        8: 14,  // Sep (N)
-        9: 20,  // Oct (T)
-        10: 26, // Nov (Z)
-        11: 32  // Dec (AF)
+        0: 2, 1: 8, 2: 14, 3: 20,  4: 26,  5: 32,  // Jan (B) - Jun (AF)
+        6: 2, 7: 8, 8: 14, 9: 20, 10: 26, 11: 32   // Jul (B) - Dec (AF)
       };
 
       const startCol = monthColMap[monthIndex];
@@ -69,13 +68,11 @@ function doPost(e) {
 
       const targetRow = startRow + (day - 1); // Adjust for the 1-based day
 
-      dataSheet.getRange(targetRow, startCol).setValue(data["Total Device Count"] || "");
-      dataSheet.getRange(targetRow, startCol + 1).setValue(data["Raw Messages"] || "");
-      dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"] || "");
-      dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"] || "");
-      // Skips 5th column (Average Message Size), which is calculated in the sheet
+      dataSheet.getRange(targetRow, startCol)    .setValue(data["Total Device Count"] || "");
+      dataSheet.getRange(targetRow, startCol + 1).setValue(data["Raw Messages"]       || "");
+      dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"]       || "");
+      dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"]    || "");
     }
-
 
     return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -86,8 +83,6 @@ function doPost(e) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 }
-
-
 
 /**
  * Saves a file to Google Drive
@@ -130,6 +125,9 @@ function appendToGoogleSheet(data, sheet) {
   sheet.appendRow(rowData);
 }
 
+/**
+ * Resets daily statuses for specific checks
+ */
 function resetDailyStatuses() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(DATA_ENTRY_SHEET_NAME);
   const dataRange = sheet.getDataRange();
@@ -158,3 +156,5 @@ function resetDailyStatuses() {
     }
   }
 }
+
+
