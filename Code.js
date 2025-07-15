@@ -3,7 +3,7 @@ const DATA_ENTRY_SHEET_NAME = "Sheet1";
 const TIME_STAMP_COLUMN_NAME = "Timestamp";
 const FOLDER_ID = "NOC";
 // for secondary file upload
-const SECOND_SPREADSHEET_ID = "1WN-GNFAv3-d0YKvI0TMglReiURBtsgNqieutUv3bG7Q";
+const SECOND_SPREADSHEET_ID = "1UjBuFvI3clazaZxQbKYNExOWIdp8t_2jF9Dz3SaEvDQ";
 const NUMERIC_LOG_SHEET_NAME = '7/15/25'; // Sheet name in the secondary spreadsheet
 // == CONFIGURATION END ==
 
@@ -45,14 +45,29 @@ function doPost(e) {
       const numericSheet = SpreadsheetApp.openById(SECOND_SPREADSHEET_ID).getSheetByName(NUMERIC_LOG_SHEET_NAME);
       const now = new Date();
 
-      numericSheet.appendRow([
-        now,
-        data["Num 1"] || "",
-        data["Num 2"] || "",
-        data["Num 3"] || "",
-        data["Num 4"] || "",
-        data["Notes"] || ""
-      ]);
+      const monthAbbrev = now.toLocaleString('default', { month: 'short' }); // e.g., "Jul"
+      const year = now.getFullYear().toString().slice(-2); // e.g., "25"
+      const monthLabel = `${monthAbbrev}-${year}`; // Matches your merged headers
+
+      const day = now.getDate(); // 1–31
+
+      // Find the starting column for this month (5 cols per month)
+      const headerRow = numericSheet.getRange(1, 1, 1, numericSheet.getLastColumn()).getValues()[0];
+      let startCol = -1;
+      for (let col = 0; col < headerRow.length; col++) {
+        if (headerRow[col] === monthLabel) {
+          startCol = col + 1; // Convert from 0-based to 1-based
+          break;
+        }
+      }
+
+      if (startCol === -1) throw new Error(`Month label "${monthLabel}" not found in sheet.`);
+
+      // Skip the 5th column (it's calculated)
+      numericSheet.getRange(day, startCol).setValue(data["Total Device Count"] || "");
+      numericSheet.getRange(day, startCol + 1).setValue(data["Raw Messages"] || "");
+      numericSheet.getRange(day, startCol + 2).setValue(data["Unique IMEIs"] || "");
+      numericSheet.getRange(day, startCol + 3).setValue(data["Free Disk Space"] || "");
     }
 
     return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
