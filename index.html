@@ -198,13 +198,13 @@
   <div class="tile-grid" id="tileGrid"></div>
 
   <!-- Maintenance Menu -->
-<div style="position: absolute; top: 1rem; right: 1rem;">
-  <button id="maintenanceBtn" class="button is-small is-warning" onclick="toggleMaintenanceBox()">Maintenance</button>
-  <div id="maintenanceBox" style="display:none; margin-top: 0.5rem;">
-    <input id="spreadsheetUrlInput" class="input is-small" type="text" placeholder="Paste spreadsheet URL">
-    <button class="button is-small is-success mt-1" onclick="submitSpreadsheetUrl()">Submit</button>
+  <div style="position: absolute; top: 1rem; right: 1rem;">
+    <button id="maintenanceBtn" class="button is-small is-warning" onclick="toggleMaintenanceBox()">Maintenance</button>
+    <div id="maintenanceBox" style="display:none; margin-top: 0.5rem;">
+      <input id="spreadsheetUrlInput" class="input is-small" type="text" placeholder="Paste spreadsheet URL">
+      <button class="button is-small is-success mt-1" onclick="submitSpreadsheetUrl()">Submit</button>
+    </div>
   </div>
-</div>
 
   <!-- Row One -->
   <div class="tile-grid">
@@ -639,8 +639,11 @@
         if (formData.has('Total Device Count') && formData.has('Raw Messages') && formData.has('Unique IMEIs') &&
           formData.has('Free Disk Space')) {
           formDataObj['Completed'] = 'TRUE';
-          formDataObj['Notes'] = `Total Device Count: ${formDataObj['Total Device Count']}, Raw Messages: ${formDataObj['Raw
-  Messages']}, Unique IMEIs: ${formDataObj['Unique IMEIs']}, Free Disk Space: ${formDataObj['Free Disk Space']}`;
+          formDataObj['Notes'] = 
+            `Total Device Count: ${formDataObj['Total Device Count']},
+            Raw Messages: ${formDataObj['Raw Messages']},
+            Unique IMEIs: ${formDataObj['Unique IMEIs']},
+            Free Disk Space: ${formDataObj['Free Disk Space']}`;
         }
 
         const now = new Date();
