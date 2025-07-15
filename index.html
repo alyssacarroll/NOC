@@ -320,15 +320,27 @@
 
     // ========== USER NAME HANDLING ==========
     function loadUserName() {
-      const savedName = localStorage.getItem("nocUserName") || "Operator";
-      document.getElementById("userName").textContent = savedName;
+      const savedDate = localStorage.getItem("nocUserDate");
+      const today = new Date().toLocaleDateString();
+
+      if (savedDate !== today) {
+        // New day, clear stored name
+        localStorage.removeItem("nocUserName");
+        localStorage.setItem("nocUserDate", today);
+        document.getElementById("userName").textContent = "Operator";
+      } else {
+        const savedName = localStorage.getItem("nocUserName") || "Operator";
+        document.getElementById("userName").textContent = savedName;
+      }
     }
     function promptUserNameChange() {
       const current = document.getElementById("userName").textContent;
       const name = prompt("Enter your name:", current);
       if (name) {
-        localStorage.setItem("nocUserName", name.trim());
-        document.getElementById("userName").textContent = name.trim();
+        const trimmed = name.trim();
+        localStorage.setItem("nocUserName", trimmed);
+        localStorage.setItem("nocUserDate", new Date().toLocaleDateString());
+        document.getElementById("userName").textContent = trimmed;
       }
     }
     // Attach click handler
