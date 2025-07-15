@@ -196,16 +196,12 @@
   <button class="button is-warning" onclick="openMaintenance()">Maintenance</button>
 
   <!-- Maintenance Menu -->
-  <div id="maintenanceModal" class="modal">
-    <div class="modal-background" onclick="closeMaintenance()"></div>
-    <div class="modal-content box">
-      <h3 class="title is-5">Update Secondary Spreadsheet</h3>
-      <input class="input" type="text" id="newSheetUrl" placeholder="Paste full spreadsheet URL or ID here">
-      <br><br>
-      <button class="button is-primary" onclick="submitNewSpreadsheetId()">Save</button>
-      <button class="button is-light" onclick="closeMaintenance()">Cancel</button>
+  <div class="navbar is-light">
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" onclick="openMaintenancePrompt()">Maintenance</a>
+      </div>
     </div>
-    <button class="modal-close is-large" aria-label="close" onclick="closeMaintenance()"></button>
   </div>
 
   <!-- Row One -->
@@ -359,40 +355,40 @@
         });
     }
 
-    // Initial load of tile statuses
-    updateTileStatuses();
+    function openMaintenancePrompt() {
+      const url = prompt("Enter the full URL of the new numeric data spreadsheet:");
+      if (!url) return;
 
-    // maintenance modal functions
-    function openMaintenance() {
-      document.getElementById("maintenanceModal").classList.add("is-active");
-    }
-
-    function closeMaintenance() {
-      document.getElementById("maintenanceModal").classList.remove("is-active");
-    }
-
-    function submitNewSpreadsheetId() {
-      const input = document.getElementById("newSheetUrl").value;
-      const idMatch = input.match(/[-\w]{25,}/);
-      if (!idMatch) {
-        alert("Invalid URL or ID. Please try again.");
+      const match = url.match(/[-\w]{25,}/);
+      if (!match) {
+        alert("Invalid spreadsheet URL.");
         return;
       }
-      const id = idMatch[0];
 
-      fetch('/saveSpreadsheetId', {
-        method: 'POST',
-        body: JSON.stringify({ newId: id }),
-        contentType: 'application/json'
-      }).then(res => res.json())
-        .then(data => {
-          alert(data.message || "Spreadsheet ID updated!");
-          closeMaintenance();
+      const newId = match[0];
+
+      fetch("/?action=updateSpreadsheetId", {
+        method: "POST",
+        body: JSON.stringify({ newSpreadsheetId: newId }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(res => res.json())
+        .then(json => {
+          if (json.status === "success") {
+            alert("Spreadsheet ID updated successfully!");
+          } else {
+            alert("Error: " + json.message);
+          }
         })
         .catch(err => {
-          alert("Error saving spreadsheet ID: " + err.message);
+          alert("Failed to update: " + err.message);
         });
     }
+
+    // Initial load of tile statuses
+    updateTileStatuses();
 
     // Form content templates
     const formTemplates = {
