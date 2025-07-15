@@ -4,7 +4,7 @@ const TIME_STAMP_COLUMN_NAME = "Timestamp";
 const FOLDER_ID = "NOC";
 // for secondary file upload
 const SECOND_SPREADSHEET_ID = "1UjBuFvI3clazaZxQbKYNExOWIdp8t_2jF9Dz3SaEvDQ";
-const NUMERIC_LOG_SHEET_NAME = '7/15/25'; // Sheet name in the secondary spreadsheet
+const NUMERIC_LOG_SHEET_NAME = 'DataEntry'; // Sheet name in the secondary spreadsheet
 // == CONFIGURATION END ==
 
 function doPost(e) {
@@ -42,33 +42,40 @@ function doPost(e) {
 
     // Special handling for Check 07: append numeric data to second sheet
     if (checkNumber === '07') {
-      const numericSheet = SpreadsheetApp.openById(SECOND_SPREADSHEET_ID).getSheetByName(NUMERIC_LOG_SHEET_NAME);
+      const dataSheet = SpreadsheetApp.openById(SECOND_SPREADSHEET_ID).getSheetByName(NUMERIC_LOG_SHEET_NAME);
       const now = new Date();
 
-      const monthAbbrev = now.toLocaleString('default', { month: 'short' }); // e.g., "Jul"
-      const year = now.getFullYear().toString().slice(-2); // e.g., "25"
-      const monthLabel = `${monthAbbrev}-${year}`; // Matches your merged headers
-
+      const monthIndex = now.getMonth(); // 0 = Jan, ..., 11 = Dec
       const day = now.getDate(); // 1–31
 
-      // Find the starting column for this month (5 cols per month)
-      const headerRow = numericSheet.getRange(1, 1, 1, numericSheet.getLastColumn()).getValues()[0];
-      let startCol = -1;
-      for (let col = 0; col < headerRow.length; col++) {
-        if (headerRow[col] === monthLabel) {
-          startCol = col + 1; // Convert from 0-based to 1-based
-          break;
-        }
-      }
+      // Fixed month-to-column mappings (start columns of each 5-col group)
+      const monthColMap = {
+        0: 2,   // Jan (B)
+        1: 8,   // Feb (H)
+        2: 14,  // Mar (N)
+        3: 20,  // Apr (T)
+        4: 26,  // May (Z)
+        5: 32,  // Jun (AF)
+        6: 2,   // Jul (B)
+        7: 8,   // Aug (H)
+        8: 14,  // Sep (N)
+        9: 20,  // Oct (T)
+        10: 26, // Nov (Z)
+        11: 32  // Dec (AF)
+      };
 
-      if (startCol === -1) throw new Error(`Month label "${monthLabel}" not found in sheet.`);
+      const startCol = monthColMap[monthIndex];
+      const startRow = monthIndex < 6 ? 4 : 42; // Jan–Jun → row 4, Jul–Dec → row 42
 
-      // Skip the 5th column (it's calculated)
-      numericSheet.getRange(day, startCol).setValue(data["Total Device Count"] || "");
-      numericSheet.getRange(day, startCol + 1).setValue(data["Raw Messages"] || "");
-      numericSheet.getRange(day, startCol + 2).setValue(data["Unique IMEIs"] || "");
-      numericSheet.getRange(day, startCol + 3).setValue(data["Free Disk Space"] || "");
+      const targetRow = startRow + (day - 1); // Adjust for the 1-based day
+
+      dataSheet.getRange(targetRow, startCol).setValue(data["Total Device Count"] || "");
+      dataSheet.getRange(targetRow, startCol + 1).setValue(data["Raw Messages"] || "");
+      dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"] || "");
+      dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"] || "");
+      // Skips 5th column (Average Message Size), which is calculated in the sheet
     }
+
 
     return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
       .setMimeType(ContentService.MimeType.JSON);
