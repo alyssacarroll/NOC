@@ -3,7 +3,7 @@ const DATA_ENTRY_SHEET_NAME = "Sheet1";
 const TIME_STAMP_COLUMN_NAME = "Timestamp";
 const FOLDER_ID = "NOC";
 // for secondary file upload
-const SECOND_SPREADSHEET_ID = "1JwpraepmuSFGlhmcv8LwT_L7xVwCDcqi4MU4Rje7NvQ";
+const SECOND_SPREADSHEET_ID = "1WN-GNFAv3-d0YKvI0TMglReiURBtsgNqieutUv3bG7Q";
 const NUMERIC_LOG_SHEET_NAME = '7/15/25'; // Sheet name in the secondary spreadsheet
 // == CONFIGURATION END ==
 
