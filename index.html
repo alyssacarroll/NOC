@@ -94,6 +94,14 @@
       background-color: #f1c40f;
     }
 
+    .warning {
+      border-color: gray;
+      box-shadow: 0 0 10px gray;
+      background-color: gray;
+      color: white;
+    }
+
+
     .form-popup {
       display: none;
       position: fixed;
@@ -300,14 +308,26 @@
             const [checkNum, statusRaw, notes, timestamp] = row.split(",");
             const status = statusRaw?.trim().toLowerCase();
             const tileId = `${checkNum.padStart(2, "0")}`;
+            const today = new Date().toLocaleDateString();
+            const timestampDate = new Date(timestamp).toLocaleDateString();
+            const isOnHold = notes?.toLowerCase().includes("on hold");
 
             const tile = document.getElementById(tileId);
             if (tile) {
               // Remove previous status classes
               tile.classList.remove('true', 'false', 'bad', 'warning');
+
+              const statusDiv = tile.querySelector(".tile-status");
+
+              // On Hold check (must happen BEFORE applying other statuses)
+              if (isOnHold && timestampDate === today) {
+                tile.classList.add("warning");
+                if (statusDiv) statusDiv.textContent = "Status: On Hold";
+                return;
+              }
+
               // Add new status class
               if (status) tile.classList.add(status);
-              const statusDiv = tile.querySelector(".tile-status");
               let statusName = "";
               if (status === "true") statusName = "Complete";
               else if (status === "false") statusName = "Incomplete";
@@ -316,6 +336,7 @@
               else statusName = "N/A";
               if (statusDiv) statusDiv.textContent = `Status: ${statusName}`;
             }
+
           });
         })
         .catch(error => {
@@ -395,10 +416,10 @@
           
           <label style="padding-top: 10px;">Data:
             <div align="center" style="display: flex; gap: 20px; justify-content: center; padding-top: 10px;">
-              <textarea name="Num 1" rows="1" placeholder="Total Device Count" style="width:21%; font-size:0.80rem;"></textarea>
-              <textarea name="Num 2" rows="1" placeholder="Raw Messages"       style="width:21%; font-size:0.80rem;"></textarea>
-              <textarea name="Num 3" rows="1" placeholder="Unique IMEIs"       style="width:21%; font-size:0.80rem;"></textarea>
-              <textarea name="Num 4" rows="1" placeholder="Free Disk Space"    style="width:21%; font-size:0.80rem;"></textarea>
+              <textarea name="Total Device Count" rows="1" placeholder="Total Device Count" style="width:21%; font-size:0.80rem;"></textarea>
+              <textarea name="Raw Messages" rows="1" placeholder="Raw Messages"       style="width:21%; font-size:0.80rem;"></textarea>
+              <textarea name="Unique IMEIs" rows="1" placeholder="Unique IMEIs"       style="width:21%; font-size:0.80rem;"></textarea>
+              <textarea name="Free Disk Space" rows="1" placeholder="Free Disk Space"    style="width:21%; font-size:0.80rem;"></textarea>
             </div>
           </label>
         </div>
@@ -529,9 +550,9 @@
         if (!formData.has('Completed')) {
           formDataObj['Completed'] = 'FALSE';
         }
-        if (formData.has('Num 1') && formData.has('Num 2') && formData.has('Num 3') && formData.has('Num 4')) {
+        if (formData.has('Total Device Count') && formData.has('Raw Messages') && formData.has('Unique IMEIs') && formData.has('Free Disk Space')) {
           formDataObj['Completed'] = 'TRUE';
-          formDataObj['Notes'] = `Total Device Count: ${formDataObj['Num 1']}, Raw Messages: ${formDataObj['Num 2']}, Unique IMEIs: ${formDataObj['Num 3']}, Free Disk Space: ${formDataObj['Num 4']}`;
+          formDataObj['Notes'] = `Total Device Count: ${formDataObj['Total Device Count']}, Raw Messages: ${formDataObj['Raw Messages']}, Unique IMEIs: ${formDataObj['Unique IMEIs']}, Free Disk Space: ${formDataObj['Free Disk Space']}`;
         }
 
         const now = new Date();
