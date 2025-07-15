@@ -196,15 +196,17 @@
 <body>
 
   <div class="modal-backdrop" id="modalBackdrop"></div>
+
   <div style="position: absolute; top: 1rem; left: 1rem;">
     <span id="userNameDisplay" style="font-size: 1rem; cursor: pointer;">
       <span><strong>Operator: </strong> <span id="userName">User</span> ✎</span>
     </span>
     <div id="currentDate" style="font-size: 0.9rem; color: lightgray; margin-top: 0.2rem;"></div>
   </div>
-  <h1>NOC Dashboard</h1>
-  <div class="tile-grid" id="tileGrid"></div>
 
+  <h1>NOC Dashboard</h1>
+
+  <div class="tile-grid" id="tileGrid"></div>
   <!-- Row One -->
   <div class="tile-grid">
     <div class="tile" id="01" onclick="openModal('01', 'Data Center Walk')">
@@ -483,167 +485,7 @@
 
 
     // Form content templates
-    const formTemplates = {
-      // Data Center Walkthrough Check
-      '01': `
-  <input type="hidden" name="checkNumber" value="01" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> Walkthrough Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // Tech Support Email Check
-      '02': `
-  <input type="hidden" name="checkNumber" value="02" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> Email Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // VPN TAK & WAVE Check
-      '03': `
-  <input type="hidden" name="checkNumber" value="03" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="2" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // WUG Check
-      '04': `
-  <input type="hidden" name="checkNumber" value="04" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="2" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // TAK Server Federation Check
-      '05': `
-  <input type="hidden" name="checkNumber" value="05" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="2" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // PTL Check
-      '06': `
-  <input type="hidden" name="checkNumber" value="06" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="2" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // Message Check
-      '07': `
-  <input type="hidden" name="checkNumber" value="07" />
-  <div class="form-content">
-
-    <label style="padding-top: 10px;">Data:
-      <div align="center" style="display: flex; gap: 20px; justify-content: center; padding-top: 10px;">
-        <textarea name="Total Device Count" rows="1" placeholder="Total Device Count"
-          style="width:21%; font-size:0.80rem;"></textarea>
-        <textarea name="Raw Messages" rows="1" placeholder="Raw Messages"
-          style="width:21%; font-size:0.80rem;"></textarea>
-        <textarea name="Unique IMEIs" rows="1" placeholder="Unique IMEIs"
-          style="width:21%; font-size:0.80rem;"></textarea>
-        <textarea name="Free Disk Space" rows="1" placeholder="Free Disk Space"
-          style="width:21%; font-size:0.80rem;"></textarea>
-      </div>
-    </label>
-  </div>
-  `,
-      // Landing Pad Server Check
-      '08': `
-  <input type="hidden" name="checkNumber" value="08" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> Landing Pad Server Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // DS File Check
-      '09': `
-  <input type="hidden" name="checkNumber" value="09" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> DS File Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // WAVE Server Check
-      '10': `
-  <input type="hidden" name="checkNumber" value="10" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> WAVE Server Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // Eaton Dashboard Check
-      '11': `
-  <input type="hidden" name="checkNumber" value="11" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> Eaton Dashboard Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // InControl Check
-      '12': `
-  <input type="hidden" name="checkNumber" value="12" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> InControl Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // Veeam Daily Backup Check
-      '13': `
-  <input type="hidden" name="checkNumber" value="13" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> Veeam Daily Backup Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // PTB Server Checks
-      '14': `
-  <input type="hidden" name="checkNumber" value="14" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> PTB Server Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-      // IPsec Check
-      '15': `
-  <input type="hidden" name="checkNumber" value="15" />
-  <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> IPsec Check Completed</label>
-    <label>Comments:
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
-  </div>
-  `,
-    };
+    
 
     async function submitOperatorAndDate() {
       const name = localStorage.getItem("nocUserName") || "Unknown";
