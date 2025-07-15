@@ -194,7 +194,13 @@
 </head>
 
 <body>
+
   <div class="modal-backdrop" id="modalBackdrop"></div>
+  <div style="position: absolute; top: 1rem; left: 1rem;">
+    <span id="userNameDisplay" style="font-size: 1rem; cursor: pointer;">
+      <span><strong>Operator: </strong> <span id="userName">User</span> ✎</span>
+    </span>
+  </div>
   <h1>NOC Dashboard</h1>
   <div class="tile-grid" id="tileGrid"></div>
 
@@ -309,6 +315,25 @@
   <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRVOcAqswtmyk_vtsIiOeBy6zwv_jT4pxx_UOBlcsr-n4cxa0PnFluIvTP_E9yXk3nCB-SLWi_cOSiW/pub?output=csv";
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuQKu1YOgZvkhwhnOTdqAEnUMFCm7SkKziz6iqAU3YF4eyjHKglIONFgYLkMFo6X6-Tw/exec";
+
+    // ========== USER NAME HANDLING ==========
+    function loadUserName() {
+      const savedName = localStorage.getItem("nocUserName") || "Operator";
+      document.getElementById("userName").textContent = savedName;
+    }
+    function promptUserNameChange() {
+      const current = document.getElementById("userName").textContent;
+      const name = prompt("Enter your name:", current);
+      if (name) {
+        localStorage.setItem("nocUserName", name.trim());
+        document.getElementById("userName").textContent = name.trim();
+      }
+    }
+    // Attach click handler
+    document.addEventListener("DOMContentLoaded", () => {
+      loadUserName();
+      document.getElementById("userNameDisplay").addEventListener("click", promptUserNameChange);
+    });
 
     // Function to update tile statuses
     function updateTileStatuses() {
