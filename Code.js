@@ -44,6 +44,28 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
     const checkNumber = data.checkNumber;
 
+    // Handle operator-header *first* and return immediately
+    if (checkNumber === "operator-header") {
+      const ss = SpreadsheetApp.openById(DAILY_CHECKS_SPREADSHEET_ID);
+      const todaySheetName = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "M/d/yy");
+      const sheet = ss.getSheetByName(todaySheetName);
+
+      if (!sheet) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "error",
+          message: "Sheet with today's date not found: " + todaySheetName
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+
+      sheet.getRange("C3").setValue(data.date);
+      sheet.getRange("C4").setValue(data.operator);
+
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "Operator and date written to Daily Checks sheet"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     if (!checkNumber) throw new Error("Missing check number.");
 
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
@@ -64,7 +86,7 @@ function doPost(e) {
 
     if (targetRow === -1) throw new Error(`Check number ${checkNumber} not found.`);
 
-    // Update main sheet row
+    // Now update main sheet row *after* you have sheet, headers, targetRow
     for (let key in data) {
       const colIndex = headers.indexOf(key);
       if (colIndex >= 0) {
@@ -72,64 +94,36 @@ function doPost(e) {
       }
     }
 
-    // Special handling for Check 07: append numeric data to second sheet
+    // Special handling for Check 07
     if (checkNumber === '07') {
       const dataSheet = SpreadsheetApp.openById(getSecondarySpreadsheetId()).getSheetByName(NUMERIC_LOG_SHEET_NAME);
       const now = new Date();
-      const monthIndex = now.getMonth(); // 0 = Jan, ..., 11 = Dec
-      const day = now.getDate(); // 1–31
+      const monthIndex = now.getMonth();
+      const day = now.getDate();
 
-      // Fixed month-to-column mappings (start columns of each 5-col group)
       const monthColMap = {
-        0: 2, 1: 8, 2: 14, 3: 20, 4: 26, 5: 32,  // Jan (B) - Jun (AF)
-        6: 2, 7: 8, 8: 14, 9: 20, 10: 26, 11: 32   // Jul (B) - Dec (AF)
+        0: 2, 1: 8, 2: 14, 3: 20, 4: 26, 5: 32,
+        6: 2, 7: 8, 8: 14, 9: 20, 10: 26, 11: 32
       };
 
       const startCol = monthColMap[monthIndex];
-      const startRow = monthIndex < 6 ? 4 : 42; // Jan–Jun → row 4, Jul–Dec → row 42
+      const startRow = monthIndex < 6 ? 4 : 42;
+      const targetRow2 = startRow + (day - 1);
 
-      const targetRow = startRow + (day - 1); // Adjust for the 1-based day
-
-      dataSheet.getRange(targetRow, startCol).setValue(data["Total Device Count"] || "");
-      dataSheet.getRange(targetRow, startCol + 1).setValue(data["Raw Messages"] || "");
-      dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"] || "");
-      dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"] || "");
+      dataSheet.getRange(targetRow2, startCol).setValue(data["Total Device Count"] || "");
+      dataSheet.getRange(targetRow2, startCol + 1).setValue(data["Raw Messages"] || "");
+      dataSheet.getRange(targetRow2, startCol + 2).setValue(data["Unique IMEIs"] || "");
+      dataSheet.getRange(targetRow2, startCol + 3).setValue(data["Free Disk Space"] || "");
     }
-
-    if (data.checkNumber === "operator-header") {
-      const ss = SpreadsheetApp.openById(DAILY_CHECKS_SPREADSHEET_ID);
-      const todaySheetName = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "M/d/yy"); // e.g. "7/15/25"
-      const sheet = ss.getSheetByName(todaySheetName);
-
-      if (!sheet) {
-        return ContentService.createTextOutput(JSON.stringify({
-          status: "error",
-          message: "Sheet with today's date not found: " + todaySheetName
-        })).setMimeType(ContentService.MimeType.JSON);
-      }
-
-      // Write values
-      sheet.getRange("C3").setValue(data.date);     // right of "Date:"
-      sheet.getRange("C4").setValue(data.operator); // right of "Operator:"
-
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: "Operator and date written to Daily Checks sheet"
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-
 
     return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
       .setMimeType(ContentService.MimeType.JSON);
-
 
   } catch (err) {
     console.error(err);
     return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-
 }
 
 /**
