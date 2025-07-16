@@ -16,119 +16,236 @@ function getMessageMetricsSpreadsheetId() {
   if (!id) throw new Error('No Message Metrics spreadsheet ID set in Config sheet.');
   return id;
 }
-/**
- * Gets or creates the Config sheet.
- * @returns {Sheet} Config sheet
- */
+
 function getOrCreateConfigSheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName('Config');
-  // add the Config sheet if it doesn't exist
   if (!sheet) {
     sheet = ss.insertSheet('Config');
-    sheet.getRange('A1').setValue('Message Metrics Spreadsheet ID');
+    sheet.getRange('A1').setValue('Secondary Spreadsheet ID');
   }
   return sheet;
 }
 
 function doPost(e) {
+  const SCRIPT_TIMEZONE = Session.getScriptTimeZone();
+
   try {
-    if (e.parameter && e.parameter.action === 'saveSpreadsheetId') {
-      const data = JSON.parse(e.postData.contents);
-      const newId = data.newId;
-      if (!newId) throw new Error("Missing spreadsheet ID.");
-
-      const configSheet = getOrCreateConfigSheet();
-      configSheet.getRange('B1').setValue(newId);
-
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "ID saved." }))
-        .setMimeType(ContentService.MimeType.JSON);
+    if (!e.postData || !e.postData.contents) {
+      throw new Error("No post data received");
     }
 
     const data = JSON.parse(e.postData.contents);
-    const checkNumber = data.checkNumber;
 
-    // Handle operator-header *first* and return immediately
-    if (checkNumber === "operator-header") {
-      const ss = SpreadsheetApp.openById(DAILY_CHECKS_SPREADSHEET_ID);
-      const todaySheetName = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "M/d/yy");
-      const sheet = ss.getSheetByName(todaySheetName);
-
-      if (!sheet) {
-        return ContentService.createTextOutput(JSON.stringify({
-          status: "error",
-          message: "Sheet with today's date not found: " + todaySheetName
-        })).setMimeType(ContentService.MimeType.JSON);
-      }
-
-      sheet.getRange("C3").setValue(data.date);
-      sheet.getRange("C4").setValue(data.operator);
-
-      return ContentService.createTextOutput(JSON.stringify({
-        status: "success",
-        message: "Operator and date written to Daily Checks sheet"
-      })).setMimeType(ContentService.MimeType.JSON);
+    // Validate required field checkNumber
+    if (!data.checkNumber) {
+      throw new Error("Missing checkNumber in payload");
     }
 
-    if (!checkNumber) throw new Error("Missing check number.");
+    // -------- Write to Spreadsheet #1 (your original log) ---------
+    const ss1 = SpreadsheetApp.openById("1SQc0ZZU5j7dwcqYVr56hylA3mKp326Yggz8E3FJXlMc");
+    const sheet1 = ss1.getSheetByName("Sheet1"); // Adjust if you use a different sheet name
 
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-    const checkNumberCol = headers.indexOf("Check #") + 1;
-    if (checkNumberCol === 0) throw new Error("'Check #' column not found.");
-
-    const lastRow = sheet.getLastRow();
-    const checkNumbers = sheet.getRange(2, checkNumberCol, lastRow - 1).getValues();
-
-    let targetRow = -1;
-    for (let i = 0; i < checkNumbers.length; i++) {
-      if (checkNumbers[i][0] == checkNumber) {
-        targetRow = i + 2; // Adjusted for header
+    // Find row for this checkNumber (assuming column A has check numbers)
+    const checkNumStr = data.checkNumber.toString().padStart(2, "0");
+    const dataRange = sheet1.getRange("A2:A" + sheet1.getLastRow());
+    const values = dataRange.getValues();
+    let rowToUpdate = null;
+    for (let i = 0; i < values.length; i++) {
+      if (values[i][0].toString().padStart(2, "0") === checkNumStr) {
+        rowToUpdate = i + 2; // +2 because of header + 1-based indexing
         break;
       }
     }
-
-    if (targetRow === -1) throw new Error(`Check number ${checkNumber} not found.`);
-
-    // Now update main sheet row *after* you have sheet, headers, targetRow
-    for (let key in data) {
-      const colIndex = headers.indexOf(key);
-      if (colIndex >= 0) {
-        sheet.getRange(targetRow, colIndex + 1).setValue(data[key]);
-      }
+    if (!rowToUpdate) {
+      throw new Error(`Check number ${checkNumStr} not found in Spreadsheet #1`);
     }
 
-    // Special handling for Check 07
-    if (checkNumber === '07') {
-      const dataSheet = SpreadsheetApp.openById(getSecondarySpreadsheetId()).getSheetByName(NUMERIC_LOG_SHEET_NAME);
-      const now = new Date();
-      const monthIndex = now.getMonth();
-      const day = now.getDate();
+    // Prepare data to update (example columns: Completed B, Notes C, Timestamp D)
+    sheet1.getRange(rowToUpdate, 2).setValue(data.Completed === "TRUE" || data.Completed === true);
+    sheet1.getRange(rowToUpdate, 3).setValue(data.Notes || "");
+    sheet1.getRange(rowToUpdate, 4).setValue(new Date());
 
-      const monthColMap = {
-        0: 2, 1: 8, 2: 14, 3: 20, 4: 26, 5: 32,
-        6: 2, 7: 8, 8: 14, 9: 20, 10: 26, 11: 32
-      };
+    // -------- Write to Spreadsheet #3 ("NOC Checklist") ---------
+    writeToNocChecklist(data);
 
-      const startCol = monthColMap[monthIndex];
-      const startRow = monthIndex < 6 ? 4 : 42;
-      const targetRow2 = startRow + (day - 1);
-
-      dataSheet.getRange(targetRow2, startCol).setValue(data["Total Device Count"] || "");
-      dataSheet.getRange(targetRow2, startCol + 1).setValue(data["Raw Messages"] || "");
-      dataSheet.getRange(targetRow2, startCol + 2).setValue(data["Unique IMEIs"] || "");
-      dataSheet.getRange(targetRow2, startCol + 3).setValue(data["Free Disk Space"] || "");
-    }
-
-    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
-      .setMimeType(ContentService.MimeType.JSON);
-
-  } catch (err) {
-    console.error(err);
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "success", message: "Data submitted and logged to both sheets." })
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "error", message: error.message })
+    ).setMimeType(ContentService.MimeType.JSON);
   }
 }
+
+
+// --- Helper functions (include these somewhere in your script) ---
+
+function getOrCreateMonthlySpreadsheet() {
+  const now = new Date();
+  const monthName = Utilities.formatDate(now, Session.getScriptTimeZone(), "MMM yy"); // e.g. "Jul 25"
+  const folderIter = DriveApp.getFoldersByName("NOC");
+  if (!folderIter.hasNext()) throw new Error("NOC folder not found in Drive");
+  const folder = folderIter.next();
+
+  const files = folder.getFilesByName(`NOC Checklist - ${monthName}`);
+  if (files.hasNext()) {
+    return SpreadsheetApp.open(files.next());
+  }
+
+  // Create new monthly spreadsheet if doesn't exist
+  const newSs = SpreadsheetApp.create(`NOC Checklist - ${monthName}`);
+  folder.addFile(DriveApp.getFileById(newSs.getId()));
+  DriveApp.getRootFolder().removeFile(DriveApp.getFileById(newSs.getId())); // Remove from root My Drive
+  return newSs;
+}
+
+function copyPreviousDaySheet() {
+  const spreadsheet = getOrCreateMonthlySpreadsheet();
+
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  const tz = Session.getScriptTimeZone();
+  const todayName = Utilities.formatDate(today, tz, "M/d/yy");
+  const yesterdayName = Utilities.formatDate(yesterday, tz, "M/d/yy");
+
+  const previousSheet = spreadsheet.getSheetByName(yesterdayName);
+  if (!previousSheet) throw new Error(`Sheet "${yesterdayName}" not found in "${spreadsheet.getName()}"`);
+
+  const newSheet = previousSheet.copyTo(spreadsheet).activate();
+  newSheet.setName(todayName);
+
+  // Reset checkboxes to FALSE and set description font color blue except for "WAVE" checks
+  const range = newSheet.getDataRange();
+  const values = range.getValues();
+  const numRows = values.length;
+  const checkboxCol = 2; // Column B
+  const titleCol = 3;    // Column C
+
+  for (let row = 1; row < numRows; row++) {
+    const checkboxValue = values[row][checkboxCol - 1];
+    const titleText = values[row][titleCol - 1];
+
+    if (typeof checkboxValue === "boolean") {
+      const checkboxCell = newSheet.getRange(row + 1, checkboxCol);
+      checkboxCell.setValue(false);
+
+      if (typeof titleText === 'string' && titleText.includes("WAVE")) continue;
+
+      const descriptionRow = row + 2;
+      if (descriptionRow <= numRows) {
+        const descriptionCell = newSheet.getRange(descriptionRow, titleCol);
+        descriptionCell.setFontColor("blue");
+      }
+    }
+  }
+}
+
+function getTimeBlock() {
+  const tz = Session.getScriptTimeZone();
+  const now = new Date();
+  const hour = Number(Utilities.formatDate(now, tz, "H"));
+  if (hour >= 0 && hour < 10) return "morning";
+  if (hour >= 10 && hour < 14) return "midday";
+  if (hour >= 14 && hour < 24) return "endofday";
+  return "morning"; // Default to morning if somehow out of range
+}
+
+function isCheckInBlock(checkNum, timeBlock) {
+  const skipChecks = [2, 7, 13];
+  if ((timeBlock === "midday" || timeBlock === "endofday") && skipChecks.includes(checkNum)) {
+    return false;
+  }
+  return true;
+}
+
+function findCheckRow(sheet, checkNum, timeBlock) {
+  let startRow, endRow;
+  if (timeBlock === "morning") {
+    startRow = 8;
+    endRow = 39;
+  } else if (timeBlock === "midday") {
+    startRow = 44;
+    endRow = 69;
+  } else if (timeBlock === "endofday") {
+    startRow = 74;
+    endRow = 99;
+  } else {
+    return null;
+  }
+
+  const checkNumsRange = sheet.getRange(startRow, 3, endRow - startRow + 1, 1); // column C
+  const checkNumsValues = checkNumsRange.getValues();
+
+  for (let i = 0; i < checkNumsValues.length; i++) {
+    const val = checkNumsValues[i][0];
+    if (val) {
+      const match = val.toString().match(/^(\d+)/);
+      if (match && Number(match[1]) === checkNum) {
+        return startRow + i;
+      }
+    }
+  }
+  return null;
+}
+
+function writeToNocChecklist(data) {
+  const spreadsheet = getOrCreateMonthlySpreadsheet();
+  const tz = Session.getScriptTimeZone();
+  const todayName = Utilities.formatDate(new Date(), tz, "M/d/yy");
+
+  let sheet = spreadsheet.getSheetByName(todayName);
+  if (!sheet) {
+    copyPreviousDaySheet();
+    sheet = spreadsheet.getSheetByName(todayName);
+  }
+
+  // Write operator name and date to C3 & C4
+  sheet.getRange("C3").setValue(data.Operator || "Unknown");
+  sheet.getRange("C4").setValue(data.Date || Utilities.formatDate(new Date(), tz, "M/d/yy"));
+
+  const timeBlock = getTimeBlock();
+  const checkNum = Number(data.checkNumber);
+  if (!isCheckInBlock(checkNum, timeBlock)) {
+    // Skip logging for this check/timeBlock combo
+    return;
+  }
+
+  const row = findCheckRow(sheet, checkNum, timeBlock);
+  if (!row) throw new Error(`Check number ${checkNum} not found in ${timeBlock} section`);
+
+  // Checkbox in col B, Notes in row+1 col C
+  sheet.getRange(row, 2).setValue(data.Completed === "TRUE" || data.Completed === true);
+
+  // === Append note with red text + bullet + date ===
+  if (data.Notes && data.Notes.trim()) {
+    const descriptionCell = sheet.getRange(row + 1, 3);
+    const existingText = descriptionCell.getValue();
+    const datePrefix = Utilities.formatDate(new Date(), tz, "M/d/yy");
+    const newBullet = `- ${datePrefix}: ${data.Notes.trim()}`;
+    const updatedText = existingText ? `${existingText}\n${newBullet}` : newBullet;
+
+    descriptionCell.setValue(updatedText);
+
+    // Style the newly added text in red
+    const start = updatedText.length - newBullet.length;
+    const end = updatedText.length;
+    const redStyle = SpreadsheetApp.newTextStyle().setForegroundColor("red").build();
+
+    const styledText = SpreadsheetApp.newRichTextValue()
+      .setText(updatedText)
+      .setTextStyle(start, end, redStyle)
+      .build();
+
+    descriptionCell.setRichTextValue(styledText);
+  }
+
+  // You can add conditional formatting or font colors here if desired
+}
+
 
 /**
  * Saves a file to Google Drive
@@ -202,3 +319,75 @@ function resetDailyStatuses() {
     }
   }
 }
+
+function getOrCreateMonthlySpreadsheet() {
+  const now = new Date();
+  const monthName = now.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }); // e.g. "Jul '25"
+  const folder = DriveApp.getFoldersByName("NOC").next();
+
+  // Try to find existing spreadsheet
+  const files = folder.getFilesByName(`NOC Checklist - ${monthName}`);
+  if (files.hasNext()) {
+    return SpreadsheetApp.open(files.next());
+  }
+
+  // Otherwise, create new
+  const newSheet = SpreadsheetApp.create(`NOC Checklist - ${monthName}`);
+  folder.addFile(DriveApp.getFileById(newSheet.getId()));
+  DriveApp.getRootFolder().removeFile(DriveApp.getFileById(newSheet.getId())); // remove from My Drive
+  return newSheet;
+}
+
+
+function copyPreviousDaySheet() {
+  const spreadsheet = getOrCreateMonthlySpreadsheet();
+
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  const tz = Session.getScriptTimeZone();
+  const todayName = Utilities.formatDate(today, tz, "M/d/yy");
+  const yesterdayName = Utilities.formatDate(yesterday, tz, "M/d/yy");
+
+  const previousSheet = spreadsheet.getSheetByName(yesterdayName);
+  if (!previousSheet) throw new Error(`Sheet "${yesterdayName}" not found in "${spreadsheet.getName()}"`);
+
+  // Copy and rename
+  const newSheet = previousSheet.copyTo(spreadsheet).activate();
+  newSheet.setName(todayName);
+
+  newSheet.getRange("C3").clearContent();
+  newSheet.getRange("C4").clearContent();
+
+  const range = newSheet.getDataRange();
+  const values = range.getValues();
+  const numRows = values.length;
+
+  const checkboxCol = 2; // Column B
+  const titleCol = 3;    // Column C
+
+  for (let row = 1; row < numRows; row++) {
+    const checkboxValue = values[row][checkboxCol - 1];
+    const titleText = values[row][titleCol - 1];
+
+    if (typeof checkboxValue === "boolean") {
+      const checkboxCell = newSheet.getRange(row + 1, checkboxCol);
+      checkboxCell.setValue(false);
+
+      if (typeof titleText === 'string' && titleText.includes("WAVE")) continue;
+
+      const descriptionRow = row + 2;
+      if (descriptionRow <= numRows) {
+        const descriptionCell = newSheet.getRange(descriptionRow, titleCol);
+        descriptionCell.setFontColor("blue");
+      }
+    }
+  }
+}
+
+
+
+
+
+
