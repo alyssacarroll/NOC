@@ -70,10 +70,9 @@ function doPost(e) {
     if (data.checkNumberStr === '07') {
       const dataSheet = SpreadsheetApp.openById(getMessageMetricsSpreadsheetId()).getSheetByName(NUMERIC_LOG_SHEET_NAME);
       const now = new Date();
-      const monthIndex = now.getMonth(); // 0 = Jan, ..., 11 = Dec
-      const day = now.getDate(); // 1–31
+      const monthIndex = now.getMonth(); 
+      const day = now.getDate(); 
 
-      // Fixed month-to-column mappings (start column of each 5-col group)
       const monthColMap = {
         0: 2, 1: 8, 2: 14, 3: 20, 4: 26, 5: 32,  // Jan–Jun
         6: 2, 7: 8, 8: 14, 9: 20, 10: 26, 11: 32 // Jul–Dec
@@ -93,10 +92,8 @@ function doPost(e) {
     // -------- Write to Spreadsheet #3 ("NOC Checklist") ---------
     writeToNocChecklist(data);
 
-
-
     return ContentService.createTextOutput(
-      JSON.stringify({ status: "success", message: "Data submitted and logged to both sheets." })
+      JSON.stringify({ status: "success", message: "Success!" })
     ).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
     return ContentService.createTextOutput(
