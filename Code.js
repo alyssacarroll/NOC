@@ -16,13 +16,17 @@ function getMessageMetricsSpreadsheetId() {
   if (!id) throw new Error('No Message Metrics spreadsheet ID set in Config sheet.');
   return id;
 }
-
+/**
+ * Gets or creates the Config sheet.
+ * @returns {Sheet} Config sheet
+ */
 function getOrCreateConfigSheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName('Config');
+  // add the Config sheet if it doesn't exist
   if (!sheet) {
     sheet = ss.insertSheet('Config');
-    sheet.getRange('A1').setValue('Secondary Spreadsheet ID');
+    sheet.getRange('A1').setValue('Message Metrics Spreadsheet ID');
   }
   return sheet;
 }
