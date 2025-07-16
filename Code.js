@@ -189,6 +189,30 @@ function isCheckInBlock(checkNum, timeBlock) {
   return true;
 }
 
+function resetMiddayChecks() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(DATA_ENTRY_SHEET_NAME);
+  const dataRange = sheet.getDataRange();
+  const values = dataRange.getValues();
+  const headers = values[0];
+
+  const checkCol = headers.indexOf("Check #");
+  const statusCol = headers.indexOf("Completed");
+  const notesCol = headers.indexOf("Notes");
+  const timestampCol = headers.indexOf("Timestamp");
+
+  const skipChecks = ["02", "07", "13"]; // Checks NOT to reset midday
+
+  for (let i = 1; i < values.length; i++) {
+    const checkNum = values[i][checkCol].toString().padStart(2, "0");
+    if (!skipChecks.includes(checkNum)) {
+      sheet.getRange(i + 1, statusCol + 1).setValue(false);   // Reset checkbox
+      sheet.getRange(i + 1, notesCol + 1).setValue("");       // Clear notes
+      sheet.getRange(i + 1, timestampCol + 1).setValue("");   // Clear timestamp (optional)
+    }
+  }
+}
+
+
 function findCheckRow(sheet, checkNum, timeBlock) {
   let startRow, endRow;
   if (timeBlock === "morning") {
