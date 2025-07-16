@@ -13,13 +13,13 @@ h1 {
 }
 
 .tile-grid {
-    display: grid;
+    display: flex;
+    justify-content: center;
     grid-template-columns: repeat(6, 1fr);
     gap: 20px;
     max-width: 2000px;
     margin: 0 auto;
     margin-bottom: 20px;
-    align-items: center;
 }
 
 .tile {
