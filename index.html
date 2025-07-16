@@ -195,7 +195,8 @@
 
 <body>
 
-  <div class="modal-backdrop" id="modalBackdrop"></div>
+  <div id="modalContainer"></div>
+
 
   <div style="position: absolute; top: 1rem; left: 1rem;">
     <span id="userNameDisplay" style="font-size: 1rem; cursor: pointer;">
@@ -209,18 +210,7 @@
   <!-- Dashboard Container -->
   <div id="dashboardContainer"></div>
 
-  <!-- Modal Form -->
-  <div id="formModal" class="form-popup">
-    <form id="modalForm" class="form-container">
-      <h2 id="modalTitle">Check</h2>
-      <div id="formContent"></div>
-      <div class="form-buttons">
-        <button type="submit" class="submit">Submit</button>
-        <button type="button" class="close" onclick="closeModal()">Close</button>
-      </div>
-      <div id="message"></div>
-    </form>
-  </div>
+
   <!-- Maintenance Menu -->
   <div style="text-align:left; margin-top: 30px;">
     <button id="messageSheetBtn" class="button is-small is-warning" onclick="toggleMessageSheetBox()">Message Metrics
@@ -457,17 +447,22 @@
           .then(res => res.text())
           .then(html => {
             document.getElementById('dashboardContainer').innerHTML = html;
+          });
 
-            // Only safe to call after dashboard is inserted
-            updateTileStatuses();
+        fetch('modal.html')
+          .then(res => res.text())
+          .then(html => {
+            document.getElementById('modalContainer').innerHTML = html;
           });
 
         loadUserName();
         displayCurrentDate();
+        updateTileStatuses();
 
         document.getElementById("userNameDisplay").addEventListener("click", promptUserNameChange);
         document.getElementById('modalForm').addEventListener('submit', handleFormSubmit);
       });
+
 
       // Expose to global (if needed)
       window.openModal = openModal;
