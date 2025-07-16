@@ -27,6 +27,13 @@ h1 {
     gap: 20px;
     margin-bottom: 20px;
 }
+.tile-grid .tile {
+  flex: 1 1 0;
+  max-width: 16.66%; /* 100% / 6 = 16.66% for 6 tiles per row */
+}
+.tile-grid.tile-grid-short .tile {
+  max-width: 25%; /* 4 per row → 100% / 4 = 25% */
+}
 
 .tile {
     background-image: linear-gradient(to bottom, #3a96b8d7, #337d97d7, #337d97d7, #388ba9d7, #49bee8d7);
