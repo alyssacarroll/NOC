@@ -19,6 +19,7 @@ h1 {
     max-width: 2000px;
     margin: 0 auto;
     margin-bottom: 20px;
+    justify-content: center;
 }
 
 .tile {
