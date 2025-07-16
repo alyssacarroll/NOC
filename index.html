@@ -453,7 +453,10 @@
           .then(res => res.text())
           .then(html => {
             document.getElementById('modalContainer').innerHTML = html;
+            // Now that modalForm is in the DOM, attach listener:
+            document.getElementById('modalForm').addEventListener('submit', handleFormSubmit);
           });
+
 
         loadUserName();
         displayCurrentDate();
