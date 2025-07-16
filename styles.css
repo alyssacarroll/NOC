@@ -12,13 +12,19 @@ h1 {
     text-shadow: 0 4px 10px #736f92;
 }
 
-.tile-grid {
-    display: flex;
-    justify-content: center;
+/* .tile-grid {
+    display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 20px;
     max-width: 2000px;
     margin: 0 auto;
+    margin-bottom: 20px;
+} */
+
+.tile-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
     margin-bottom: 20px;
 }
 
