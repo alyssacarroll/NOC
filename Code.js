@@ -385,9 +385,3 @@ function copyPreviousDaySheet() {
     }
   }
 }
-
-
-
-
-
-
