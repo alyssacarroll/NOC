@@ -28,8 +28,8 @@ function getOrCreateConfigSheet() {
 }
 
 function doPost(e) {
-  const SCRIPT_TIMEZONE = Session.getScriptTimeZone();
 
+  const SCRIPT_TIMEZONE = Session.getScriptTimeZone();
   try {
     if (!e.postData || !e.postData.contents) {
       throw new Error("No post data received");
@@ -42,7 +42,7 @@ function doPost(e) {
       throw new Error("Missing checkNumber in payload");
     }
 
-    // -------- Write to Spreadsheet #1 (your original log) ---------
+    // ------------- Write to Spreadsheet #1  --------------
     const ss1 = SpreadsheetApp.openById("1SQc0ZZU5j7dwcqYVr56hylA3mKp326Yggz8E3FJXlMc");
     const sheet1 = ss1.getSheetByName("Sheet1"); // Adjust if you use a different sheet name
 
@@ -66,8 +66,34 @@ function doPost(e) {
     sheet1.getRange(rowToUpdate, 3).setValue(data.Notes || "");
     sheet1.getRange(rowToUpdate, 4).setValue(new Date());
 
+    // ------------- Write to Spreadsheet #2 (Message Metrics) --------------
+    if (data.checkNumberStr === '07') {
+      const dataSheet = SpreadsheetApp.openById(getMessageMetricsSpreadsheetId()).getSheetByName(NUMERIC_LOG_SHEET_NAME);
+      const now = new Date();
+      const monthIndex = now.getMonth(); // 0 = Jan, ..., 11 = Dec
+      const day = now.getDate(); // 1–31
+
+      // Fixed month-to-column mappings (start column of each 5-col group)
+      const monthColMap = {
+        0: 2, 1: 8, 2: 14, 3: 20, 4: 26, 5: 32,  // Jan–Jun
+        6: 2, 7: 8, 8: 14, 9: 20, 10: 26, 11: 32 // Jul–Dec
+      };
+
+      const startCol = monthColMap[monthIndex];
+      const startRow = monthIndex < 6 ? 4 : 42; // Jan–Jun → row 4, Jul–Dec → row 42
+      const targetRow = startRow + (day - 1);   // Adjust for 1-based days
+
+      dataSheet.getRange(targetRow, startCol).setValue(data["Total Device Count"] || "");
+      dataSheet.getRange(targetRow, startCol + 1).setValue(data["Raw Messages"] || "");
+      dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"] || "");
+      dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"] || "");
+    }
+
+
     // -------- Write to Spreadsheet #3 ("NOC Checklist") ---------
     writeToNocChecklist(data);
+
+
 
     return ContentService.createTextOutput(
       JSON.stringify({ status: "success", message: "Data submitted and logged to both sheets." })
@@ -83,8 +109,9 @@ function doPost(e) {
 // --- Helper functions (include these somewhere in your script) ---
 
 function getOrCreateMonthlySpreadsheet() {
+  const SCRIPT_TIMEZONE = Session.getScriptTimeZone();
   const now = new Date();
-  const monthName = Utilities.formatDate(now, Session.getScriptTimeZone(), "MMM yy"); // e.g. "Jul 25"
+  const monthName = Utilities.formatDate(now, SCRIPT_TIMEZONE, "MMM yy"); // e.g. "Jul 25"
   const folderIter = DriveApp.getFoldersByName("NOC");
   if (!folderIter.hasNext()) throw new Error("NOC folder not found in Drive");
   const folder = folderIter.next();
@@ -307,10 +334,6 @@ function resetDailyStatuses() {
   for (let i = 1; i < values.length; i++) {
     const rowTimestamp = new Date(values[i][timestampCol]).toLocaleDateString();
     const checkNum = values[i][checkCol];
-
-    // Only reset specific checks, e.g., 01, 03, 07
-    const checksToReset = ["01", "03", "07"];
-    if (!checksToReset.includes(checkNum)) continue;
 
     if (rowTimestamp !== today) {
       sheet.getRange(i + 1, statusCol + 1).setValue("FALSE");
