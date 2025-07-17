@@ -192,9 +192,10 @@
       // Invert slider values for WAVE check (check 10)
       if (formDataObj.checkNumber === "10") {
         for (const key of serverKeys) {
-          const isChecked = formData.get(key) === "on"; // Use original FormData
+          const isChecked = formData.has(key); // true if checked, false if not present
           formDataObj[key] = isChecked ? "offline" : "online";
         }
+        formDataObj['Completed'] = 'TRUE';
       }
 
       // Inject operator info
