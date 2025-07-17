@@ -192,13 +192,8 @@
       // Invert slider values for WAVE check (check 10)
       if (formDataObj.checkNumber === "10") {
         for (const key of serverKeys) {
-          if (key in formDataObj) {
-            // Slider input might be "on" (checked) or undefined (unchecked)
-            // Convert that to boolean
-            const isChecked = formDataObj[key] === "on";
-            // Now invert and map to online/offline string:
-            formDataObj[key] = isChecked ? "offline" : "online";
-          }
+          const isChecked = formData.get(key) === "on"; // Use original FormData
+          formDataObj[key] = isChecked ? "offline" : "online";
         }
       }
 
