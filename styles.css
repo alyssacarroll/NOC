@@ -190,12 +190,12 @@ a {
 .field {
     display: flex;
     align-items: center;
-    gap: 3px; /* Further reduced gap */
+    gap: 1px; /* Further reduced gap */
     margin-bottom: 0.3rem ; /* Further reduced margin */
   }
   .label {
     margin: 0;
-    font-size: 0.75rem !important; /* Smaller font size for labels */
+    font-size: 0.80rem !important; /* Smaller font size for labels */
   }
   .switch {
     position: relative;
