@@ -186,3 +186,35 @@ a {
     font-size: 3rem;
     transition: .3s ease;
 }
+
+input[type="checkbox"].toggle {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  -webkit-appearance: none;
+  background: #ccc;
+  outline: none;
+  border-radius: 20px;
+  transition: 0.4s;
+  vertical-align: middle;
+}
+
+input[type="checkbox"].toggle:checked {
+  background: #2ecc71;
+}
+
+input[type="checkbox"].toggle::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  background: #fff;
+  transition: 0.4s;
+}
+
+input[type="checkbox"].toggle:checked::before {
+  transform: translateX(26px);
+}

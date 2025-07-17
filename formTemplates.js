@@ -104,28 +104,25 @@ const formTemplates = {
   <div class="form-popup">
     <h2>WAVE Server Status</h2>
 
-    <label>
-      <strong>Server A:</strong>
-      <input type="checkbox" name="ServerA" />
-      <span style="margin-left: 10px;">Online / Offline</span>
-    </label>
+    <div class="form-row">
+      <label for="ServerA"><strong>Server A</strong></label>
+      <input type="checkbox" class="toggle" name="ServerA" id="ServerA" />
+    </div>
 
-    <label>
-      <strong>Server B:</strong>
-      <input type="checkbox" name="ServerB" />
-      <span style="margin-left: 10px;">Online / Offline</span>
-    </label>
+    <div class="form-row">
+      <label for="ServerB"><strong>Server B</strong></label>
+      <input type="checkbox" class="toggle" name="ServerB" id="ServerB" />
+    </div>
 
-    <label>
-      <strong>Server C:</strong>
-      <input type="checkbox" name="ServerC" />
-      <span style="margin-left: 10px;">Online / Offline</span>
-    </label>
+    <div class="form-row">
+      <label for="ServerC"><strong>Server C</strong></label>
+      <input type="checkbox" class="toggle" name="ServerC" id="ServerC" />
+    </div>
 
-    <label>
-      Comments:
-      <textarea name="Notes" rows="3" placeholder="Add any notes about server status or maintenance..."></textarea>
-    </label>
+    <div class="form-row">
+      <label for="Notes">Comments:</label>
+      <textarea name="Notes" id="Notes" rows="3" placeholder="Add any notes about server status or maintenance..."></textarea>
+    </div>
   </div>
 `,
 
