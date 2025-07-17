@@ -100,7 +100,7 @@ const formTemplates = {
   `,
   // WAVE Server Check
   '10': `
-  <div class="wave-server-popup">
+  <div class="form-popup">
   <h2>WAVE Server Check</h2>
   <input type="hidden" name="checkNumber" value="10" />
   <div class="field-container">
