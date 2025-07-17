@@ -259,7 +259,7 @@ a {
 }
 .fly-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 4 columns */
+  grid-template-columns: repeat(4, auto); /* 4 columns */
   gap: 10px 30px; /* space between items */
   padding: 20px;
 }
