@@ -122,12 +122,14 @@ const formTemplates = {
     </div>
   </div>
 
-  <div class="field">
-    <label class="label">WAVE3</label>
-    <div class="control">
-      <label class="switch">
-        <span><input type="checkbox" name="WAVE3">
-        <span class="slider"></span></span>
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">
+      <label class="label">WAVE3</label>
+    </div>
+    <div class="field-body">
+      <label class="switch is-rounded">
+        <input type="checkbox" name="WAVE3">
+        <span class="check"></span>
       </label>
     </div>
   </div>
