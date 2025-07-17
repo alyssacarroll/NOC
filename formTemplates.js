@@ -109,78 +109,78 @@ const formTemplates = {
       <label class="switch"><input type="checkbox" name="Fly-216N"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-220</span>
+      <span>Fly-228</span>
       <label class="switch"><input type="checkbox" name="Fly-228"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-222</span>
+      <span>Fly-238</span>
       <label class="switch"><input type="checkbox" name="Fly-238"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-224</span>
+      <span>WAVE-PRXY12019.ptbportal.us</span>
       <label class="switch"><input type="checkbox" name="WAVE-PRXY12019.ptbportal.us"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-226</span>
+      <span>Fly-220</span>
       <label class="switch"><input type="checkbox" name="Fly-220"><span class="slider"></span></label>
     </div>
 
     <div class="fly-item">
-      <span>Fly-228</span>
+      <span>Fly-230</span>
       <label class="switch"><input type="checkbox" name="Fly-230"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-230</span>
+      <span>Fly-240</span>
       <label class="switch"><input type="checkbox" name="Fly-240"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-232</span>
+      <span>WAVE-PRXY22019.ptbportal.us</span>
       <label class="switch"><input type="checkbox" name="WAVE-PRXY22019.ptbportal.us"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-234</span>
+      <span>Fly-222</span>
       <label class="switch"><input type="checkbox" name="Fly-222"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-236</span>
+      <span>Fly-232</span>
       <label class="switch"><input type="checkbox" name="Fly-232"><span class="slider"></span></label>
     </div>
 
     <div class="fly-item">
-      <span>Fly-238</span>
+      <span>Fly-242</span>
       <label class="switch"><input type="checkbox" name="Fly-242"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-240</span>
+      <span>WAVE-MANMED2019.ptbportal.us</span>
       <label class="switch"><input type="checkbox" name="WAVE-MANMED2019.ptbportal.us"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-242</span>
+      <span>Fly-224</span>
       <label class="switch"><input type="checkbox" name="Fly-224"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-244</span>
+      <span>Fly-234</span>
       <label class="switch"><input type="checkbox" name="Fly-234"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-246</span>
+      <span>MED to VPI</span>
       <label class="switch"><input type="checkbox" name="MED to VPI"><span class="slider"></span></label>
     </div>
 
     <div class="fly-item">
-      <span>Fly-248</span>
+      <span>EASTERN EUROPE Vocality</span>
       <label class="switch"><input type="checkbox" name="EASTERN EUROPE Vocality"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-250</span>
+      <span>Fly-226</span>
       <label class="switch"><input type="checkbox" name="Fly-226"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-252</span>
+      <span>Fly-236</span>
       <label class="switch"><input type="checkbox" name="Fly-236"><span class="slider"></span></label>
     </div>
     <div class="fly-item">
-      <span>Fly-254</span>
+      <span>SA14WAVE511MS</span>
       <label class="switch"><input type="checkbox" name="SA14WAVE511MS"><span class="slider"></span></label>
     </div>
 </div>
