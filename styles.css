@@ -187,127 +187,52 @@ a {
     transition: .3s ease;
 }
 
-input[type="checkbox"].toggle {
-  position: relative;
-  width: 50px;
-  height: 24px;
-  -webkit-appearance: none;
-  background: #ccc;
-  outline: none;
-  border-radius: 20px;
-  transition: 0.4s;
-  vertical-align: middle;
-}
-
-input[type="checkbox"].toggle:checked {
-  background: #2ecc71;
-}
-
-input[type="checkbox"].toggle::before {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  top: 2px;
-  left: 2px;
-  background: #fff;
-  transition: 0.4s;
-}
-
-input[type="checkbox"].toggle:checked::before {
-  transform: translateX(26px);
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.switch .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0;
-  right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 24px;
-}
-
-.switch .slider:before {
-  position: absolute;
-  content: "";
-  height: 18px; width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-.switch input:checked + .slider {
-  background-color: #48c774;
-}
-
-.switch input:checked + .slider:before {
-  transform: translateX(26px);
-}
-  .switch {
-    display: inline-block;
-    height: 24px;
-    position: relative;
-    width: 48px;
-  }
-
-  .switch input {
-    display: none;
-  }
-
-  .switch .check {
-    background-color: #ccc;
-    border-radius: 34px;
-    bottom: 0;
-    cursor: pointer;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: background-color 0.3s;
-  }
-
-  .switch .check::before {
-    background-color: white;
-    border-radius: 50%;
-    bottom: 4px;
-    content: "";
-    height: 16px;
-    left: 4px;
-    position: absolute;
-    transition: transform 0.3s;
-    width: 16px;
-  }
-
-  .switch input:checked + .check {
-    background-color: #48c774; /* Bulma's green */
-  }
-
-  .switch input:checked + .check::before {
-    transform: translateX(24px);
-  }
-
-  .field.is-horizontal {
+.field {
+    display: flex;
     align-items: center;
-    margin-bottom: 0.75rem;
+    gap: 10px;
+    margin-bottom: 1rem;
   }
-
-  .field-label {
-    margin-right: 1rem;
+  .label {
+    margin: 0;
+    font-weight: bold;
+  }
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  input:checked + .slider:before {
+    transform: translateX(26px);
   }
