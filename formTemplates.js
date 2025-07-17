@@ -103,28 +103,85 @@ const formTemplates = {
   <input type="hidden" name="checkNumber" value="10" />
 
   <div class="fly-grid">
-  <div class="fly-item"><label><input type="checkbox" name="Fly-216N"> Fly-216N</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-220"> Fly-220</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-222"> Fly-222</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-224"> Fly-224</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-226"> Fly-226</label></div>
+  <div class="fly-item">
+    <span>Fly-216N</span>
+    <label class="switch"><input type="checkbox" name="Fly-216N"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-220</span>
+    <label class="switch"><input type="checkbox" name="Fly-220"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-222</span>
+    <label class="switch"><input type="checkbox" name="Fly-222"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-224</span>
+    <label class="switch"><input type="checkbox" name="Fly-224"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-226</span>
+    <label class="switch"><input type="checkbox" name="Fly-226"><span class="slider"></span></label>
+  </div>
 
-  <div class="fly-item"><label><input type="checkbox" name="Fly-228"> Fly-228</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-230"> Fly-230</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-232"> Fly-232</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-234"> Fly-234</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-236"> Fly-236</label></div>
+  <div class="fly-item">
+    <span>Fly-228</span>
+    <label class="switch"><input type="checkbox" name="Fly-228"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-230</span>
+    <label class="switch"><input type="checkbox" name="Fly-230"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-232</span>
+    <label class="switch"><input type="checkbox" name="Fly-232"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-234</span>
+    <label class="switch"><input type="checkbox" name="Fly-234"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-236</span>
+    <label class="switch"><input type="checkbox" name="Fly-236"><span class="slider"></span></label>
+  </div>
 
-  <div class="fly-item"><label><input type="checkbox" name="Fly-238"> Fly-238</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-240"> Fly-240</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-242"> Fly-242</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-244"> Fly-244</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-246"> Fly-246</label></div>
+  <div class="fly-item">
+    <span>Fly-238</span>
+    <label class="switch"><input type="checkbox" name="Fly-238"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-240</span>
+    <label class="switch"><input type="checkbox" name="Fly-240"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-242</span>
+    <label class="switch"><input type="checkbox" name="Fly-242"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-244</span>
+    <label class="switch"><input type="checkbox" name="Fly-244"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-246</span>
+    <label class="switch"><input type="checkbox" name="Fly-246"><span class="slider"></span></label>
+  </div>
 
-  <div class="fly-item"><label><input type="checkbox" name="Fly-248"> Fly-248</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-250"> Fly-250</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-252"> Fly-252</label></div>
-  <div class="fly-item"><label><input type="checkbox" name="Fly-254"> Fly-254</label></div>
+  <div class="fly-item">
+    <span>Fly-248</span>
+    <label class="switch"><input type="checkbox" name="Fly-248"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-250</span>
+    <label class="switch"><input type="checkbox" name="Fly-250"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-252</span>
+    <label class="switch"><input type="checkbox" name="Fly-252"><span class="slider"></span></label>
+  </div>
+  <div class="fly-item">
+    <span>Fly-254</span>
+    <label class="switch"><input type="checkbox" name="Fly-254"><span class="slider"></span></label>
+  </div>
 </div>
 `,
   // Eaton Dashboard Check
