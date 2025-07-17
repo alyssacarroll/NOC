@@ -230,7 +230,7 @@ a {
     content: "";
     height: 14px; /* Smaller circle */
     width: 14px; /* Smaller circle */
-    left: 2px; /* Adjusted positioning */
+    right: 2px; /* Adjusted positioning */
     bottom: 2px; /* Adjusted positioning */
     background-color: white;
     transition: 0.4s;
@@ -240,7 +240,7 @@ a {
     background-color: #ea0000;
   }
   input:checked + .slider:before {
-    transform: translateX(12px); /* Adjusted for smaller switch */
+    transform: translateX(-12px); /* Adjusted for smaller switch */
   }
 
   .server-columns {
