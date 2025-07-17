@@ -101,30 +101,33 @@ const formTemplates = {
   // WAVE Server Check
   '10': `
   <input type="hidden" name="checkNumber" value="10" />
-  <div class="form-popup">
-    <h2>WAVE Server Status</h2>
 
-    <div class="form-row">
-      <label for="ServerA"><strong>Server A</strong></label>
-      <input type="checkbox" class="toggle" name="ServerA" id="ServerA" />
-    </div>
+  <div class="field">
+    <label class="label">WAVE1</label>
+    <input type="checkbox" name="WAVE1" class="switch is-rounded is-info">
+    <label class="switch-label">Online</label>
+  </div>
 
-    <div class="form-row">
-      <label for="ServerB"><strong>Server B</strong></label>
-      <input type="checkbox" class="toggle" name="ServerB" id="ServerB" />
-    </div>
+  <div class="field">
+    <label class="label">WAVE2</label>
+    <input type="checkbox" name="WAVE2" class="switch is-rounded is-info">
+    <label class="switch-label">Online</label>
+  </div>
 
-    <div class="form-row">
-      <label for="ServerC"><strong>Server C</strong></label>
-      <input type="checkbox" class="toggle" name="ServerC" id="ServerC" />
-    </div>
+  <div class="field">
+    <label class="label">WAVE3</label>
+    <input type="checkbox" name="WAVE3" class="switch is-rounded is-info">
+    <label class="switch-label">Online</label>
+  </div>
 
-    <div class="form-row">
-      <label for="Notes">Comments:</label>
-      <textarea name="Notes" id="Notes" rows="3" placeholder="Add any notes about server status or maintenance..."></textarea>
+  <div class="field">
+    <label class="label">Comments</label>
+    <div class="control">
+      <textarea class="textarea" name="Notes" rows="3" placeholder="Optional comments or issues..."></textarea>
     </div>
   </div>
-`,
+`
+  ,
 
   // Eaton Dashboard Check
   '11': `
