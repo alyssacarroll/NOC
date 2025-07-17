@@ -260,3 +260,54 @@ input[type="checkbox"].toggle:checked::before {
 .switch input:checked + .slider:before {
   transform: translateX(26px);
 }
+  .switch {
+    display: inline-block;
+    height: 24px;
+    position: relative;
+    width: 48px;
+  }
+
+  .switch input {
+    display: none;
+  }
+
+  .switch .check {
+    background-color: #ccc;
+    border-radius: 34px;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: background-color 0.3s;
+  }
+
+  .switch .check::before {
+    background-color: white;
+    border-radius: 50%;
+    bottom: 4px;
+    content: "";
+    height: 16px;
+    left: 4px;
+    position: absolute;
+    transition: transform 0.3s;
+    width: 16px;
+  }
+
+  .switch input:checked + .check {
+    background-color: #48c774; /* Bulma's green */
+  }
+
+  .switch input:checked + .check::before {
+    transform: translateX(24px);
+  }
+
+  .field.is-horizontal {
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .field-label {
+    margin-right: 1rem;
+  }
