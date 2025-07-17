@@ -190,18 +190,19 @@ a {
 .field {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 1rem;
+    gap: 5px;               /*make smaller*/
+    margin-bottom: 0.5rem;  /*make smaller*/
   }
   .label {
     margin: 0;
     font-weight: bold;
+    font-size: 0.75rem;     /*make smaller*/
   }
   .switch {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 34px;
+    width: 40px;            /*make smaller*/
+    height: 24px;           /*make smaller*/
   }
   .switch input {
     opacity: 0;
@@ -217,15 +218,15 @@ a {
     bottom: 0;
     background-color: #ccc;
     transition: 0.4s;
-    border-radius: 34px;
+    border-radius: 24px;    /*make smaller*/
   }
   .slider:before {
     position: absolute;
     content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
+    height: 18px;       /*make smaller*/
+    width: 18px;        /*make smaller*/
+    left: 3px;          /*make smaller*/
+    bottom: 3px;        /*make smaller*/
     background-color: white;
     transition: 0.4s;
     border-radius: 50%;
@@ -234,5 +235,5 @@ a {
     background-color: #2196F3;
   }
   input:checked + .slider:before {
-    transform: translateX(26px);
+    transform: translateX(16px);    /*make smaller*/
   }
