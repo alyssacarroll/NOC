@@ -104,20 +104,32 @@ const formTemplates = {
 
   <div class="field">
     <label class="label">WAVE1</label>
-    <input type="checkbox" name="WAVE1" class="switch is-rounded is-info">
-    <label class="switch-label">Online</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="WAVE1">
+        <span class="slider"></span>
+      </label>
+    </div>
   </div>
 
   <div class="field">
     <label class="label">WAVE2</label>
-    <input type="checkbox" name="WAVE2" class="switch is-rounded is-info">
-    <label class="switch-label">Online</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="WAVE2">
+        <span class="slider"></span>
+      </label>
+    </div>
   </div>
 
   <div class="field">
     <label class="label">WAVE3</label>
-    <input type="checkbox" name="WAVE3" class="switch is-rounded is-info">
-    <label class="switch-label">Online</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="WAVE3">
+        <span class="slider"></span>
+      </label>
+    </div>
   </div>
 
   <div class="field">
@@ -126,9 +138,7 @@ const formTemplates = {
       <textarea class="textarea" name="Notes" rows="3" placeholder="Optional comments or issues..."></textarea>
     </div>
   </div>
-`
-  ,
-
+`,
   // Eaton Dashboard Check
   '11': `
   <input type="hidden" name="checkNumber" value="11" />
