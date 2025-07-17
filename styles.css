@@ -221,7 +221,7 @@ a {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ea0000;
+    background-color: #10c100;
     transition: 0.4s;
     border-radius: 18px; /* Adjusted for smaller switch */
   }
@@ -237,7 +237,7 @@ a {
     border-radius: 50%;
   }
   input:checked + .slider {
-    background-color: #10c100;
+    background-color: #ea0000;
   }
   input:checked + .slider:before {
     transform: translateX(12px); /* Adjusted for smaller switch */
