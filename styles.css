@@ -115,6 +115,12 @@ a {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 
+.wave-server-popup {
+    width: 1200px; /* Larger width for WAVE Server Check */
+    height: 500px; /* Larger height for WAVE Server Check */
+    max-height: 90vh; /* Allow more vertical space */
+  }
+
 .form-popup h2 {
     margin-top: 0;
     text-align: center;
