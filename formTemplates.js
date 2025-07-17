@@ -1,6 +1,6 @@
 const formTemplates = {
-      // Data Center Walkthrough Check
-      '01': `
+  // Data Center Walkthrough Check
+  '01': `
   <input type="hidden" name="checkNumber" value="01" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE"> Walkthrough Completed</label>
@@ -9,8 +9,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // Tech Support Email Check
-      '02': `
+  // Tech Support Email Check
+  '02': `
   <input type="hidden" name="checkNumber" value="02" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE"> Email Check Completed</label>
@@ -19,8 +19,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // VPN TAK & WAVE Check
-      '03': `
+  // VPN TAK & WAVE Check
+  '03': `
   <input type="hidden" name="checkNumber" value="03" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
@@ -29,8 +29,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // WUG Check
-      '04': `
+  // WUG Check
+  '04': `
   <input type="hidden" name="checkNumber" value="04" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
@@ -39,8 +39,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // TAK Server Federation Check
-      '05': `
+  // TAK Server Federation Check
+  '05': `
   <input type="hidden" name="checkNumber" value="05" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
@@ -49,8 +49,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // PTL Check
-      '06': `
+  // PTL Check
+  '06': `
   <input type="hidden" name="checkNumber" value="06" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
@@ -59,8 +59,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // Message Check
-      '07': `
+  // Message Check
+  '07': `
   <input type="hidden" name="checkNumber" value="07" />
   <div class="form-content">
 
@@ -78,8 +78,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // Landing Pad Server Check
-      '08': `
+  // Landing Pad Server Check
+  '08': `
   <input type="hidden" name="checkNumber" value="08" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE"> Landing Pad Server Check Completed</label>
@@ -88,8 +88,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // DS File Check
-      '09': `
+  // DS File Check
+  '09': `
   <input type="hidden" name="checkNumber" value="09" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE"> DS File Check Completed</label>
@@ -98,18 +98,38 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // WAVE Server Check
-      '10': `
+  // WAVE Server Check
+  '10': `
   <input type="hidden" name="checkNumber" value="10" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE"> WAVE Server Check Completed</label>
-    <label>Comments:
+    <p class="mb-2"><strong>Toggle each WAVE server's status:</strong></p>
+    
+    <div class="field">
+      <label class="label">Server A</label>
+      <input type="checkbox" id="ServerA" name="ServerA" class="switch is-rounded is-info">
+      <label for="ServerA">Online / Offline</label>
+    </div>
+
+    <div class="field">
+      <label class="label">Server B</label>
+      <input type="checkbox" id="ServerB" name="ServerB" class="switch is-rounded is-info">
+      <label for="ServerB">Online / Offline</label>
+    </div>
+
+    <div class="field">
+      <label class="label">Server C</label>
+      <input type="checkbox" id="ServerC" name="ServerC" class="switch is-rounded is-info">
+      <label for="ServerC">Online / Offline</label>
+    </div>
+
+    <div class="field">
+      <label class="label">Comments (optional)</label>
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </label>
+    </div>
   </div>
-  `,
-      // Eaton Dashboard Check
-      '11': `
+`,
+  // Eaton Dashboard Check
+  '11': `
   <input type="hidden" name="checkNumber" value="11" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE"> Eaton Dashboard Check Completed</label>
@@ -118,8 +138,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // InControl Check
-      '12': `
+  // InControl Check
+  '12': `
   <input type="hidden" name="checkNumber" value="12" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE"> InControl Check Completed</label>
@@ -128,8 +148,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // Veeam Daily Backup Check
-      '13': `
+  // Veeam Daily Backup Check
+  '13': `
   <input type="hidden" name="checkNumber" value="13" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE"> Veeam Daily Backup Check Completed</label>
@@ -138,8 +158,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // PTB Server Checks
-      '14': `
+  // PTB Server Checks
+  '14': `
   <input type="hidden" name="checkNumber" value="14" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE"> PTB Server Check Completed</label>
@@ -148,8 +168,8 @@ const formTemplates = {
     </label>
   </div>
   `,
-      // IPsec Check
-      '15': `
+  // IPsec Check
+  '15': `
   <input type="hidden" name="checkNumber" value="15" />
   <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE"> IPsec Check Completed</label>
@@ -158,4 +178,4 @@ const formTemplates = {
     </label>
   </div>
   `,
-    };
+};
