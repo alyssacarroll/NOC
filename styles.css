@@ -221,7 +221,7 @@ a {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: #ea0000;
     transition: 0.4s;
     border-radius: 18px; /* Adjusted for smaller switch */
   }
