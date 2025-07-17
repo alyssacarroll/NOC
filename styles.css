@@ -191,7 +191,7 @@ a {
     display: flex;
     align-items: center;
     gap: 1px; /* Further reduced gap */
-    margin-bottom: 0.3rem ; /* Further reduced margin */
+    margin-bottom: 0.1rem ; /* Further reduced margin */
   }
   .label {
     margin: 0;
