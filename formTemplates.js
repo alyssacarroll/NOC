@@ -12,7 +12,7 @@ const formTemplates = {
   // Tech Support Email Check
   '02': `
   <input type="hidden" name="checkNumber" value="02" />
-  <div class="form-content">
+  <div class="form-popup">
     <label><input type="checkbox" name="Completed" value="TRUE"> Email Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
@@ -101,33 +101,34 @@ const formTemplates = {
   // WAVE Server Check
   '10': `
   <input type="hidden" name="checkNumber" value="10" />
-  <div class="form-content">
-    <p class="mb-2"><strong>Toggle each WAVE server's status:</strong></p>
-    
-    <div class="field">
-      <label class="label">Server A</label>
-      <input type="checkbox" id="ServerA" name="ServerA" class="switch is-rounded is-info">
-      <label for="ServerA">Online / Offline</label>
-    </div>
+  <div class="form-popup">
+    <h2>WAVE Server Status</h2>
 
-    <div class="field">
-      <label class="label">Server B</label>
-      <input type="checkbox" id="ServerB" name="ServerB" class="switch is-rounded is-info">
-      <label for="ServerB">Online / Offline</label>
-    </div>
+    <label>
+      <strong>Server A:</strong>
+      <input type="checkbox" name="ServerA" />
+      <span style="margin-left: 10px;">Online / Offline</span>
+    </label>
 
-    <div class="field">
-      <label class="label">Server C</label>
-      <input type="checkbox" id="ServerC" name="ServerC" class="switch is-rounded is-info">
-      <label for="ServerC">Online / Offline</label>
-    </div>
+    <label>
+      <strong>Server B:</strong>
+      <input type="checkbox" name="ServerB" />
+      <span style="margin-left: 10px;">Online / Offline</span>
+    </label>
 
-    <div class="field">
-      <label class="label">Comments (optional)</label>
-      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
-    </div>
+    <label>
+      <strong>Server C:</strong>
+      <input type="checkbox" name="ServerC" />
+      <span style="margin-left: 10px;">Online / Offline</span>
+    </label>
+
+    <label>
+      Comments:
+      <textarea name="Notes" rows="3" placeholder="Add any notes about server status or maintenance..."></textarea>
+    </label>
   </div>
 `,
+
   // Eaton Dashboard Check
   '11': `
   <input type="hidden" name="checkNumber" value="11" />
