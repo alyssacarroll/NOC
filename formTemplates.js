@@ -235,4 +235,14 @@ const formTemplates = {
     </label>
   </div>
   `,
+  // BH2 Check
+  '16': `
+  <input type="hidden" name="checkNumber" value="16" />
+  <div class="form-content">
+    <label><input type="checkbox" name="Completed" value="TRUE"> BH2 Check Completed</label>
+    <label>Comments:
+      <textarea name="Notes" rows="3" style="width:100%;"></textarea>
+    </label>
+  </div>
+  `,
 };

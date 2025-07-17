@@ -183,10 +183,14 @@
       ) {
         formDataObj['Completed'] = 'TRUE';
         formDataObj['Notes'] =
-          `Total Device Count: ${formDataObj['Total Device Count']},
-          Raw Messages: ${formDataObj['Raw Messages']},
-          Unique IMEIs: ${formDataObj['Unique IMEIs']},
-          Free Disk Space: ${formDataObj['Free Disk Space']}`;
+          `${formDataObj['Total Device Count']},
+           ${formDataObj['Raw Messages']},
+           ${formDataObj['Unique IMEIs']},
+           ${formDataObj['Free Disk Space']}`;
+      }
+
+      if (formDataObj['checkNumber'] === '10') {
+        formDataObj['Completed'] = 'TRUE';
       }
 
       formDataObj['Timestamp'] = new Date().toLocaleString();
