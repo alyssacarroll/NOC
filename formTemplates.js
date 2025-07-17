@@ -102,23 +102,35 @@ const formTemplates = {
   '10': `
   <input type="hidden" name="checkNumber" value="10" />
 
-  <div class="field">
-    <label class="label">WAVE1</label>
-    <div class="control">
-      <label class="switch">
-        <input type="checkbox" name="WAVE1">
-        <span class="slider"></span>
-      </label>
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">
+      <label class="label">WAVE1</label>
+    </div>
+    <div class="field-body">
+      <div class="field">
+        <div class="control">
+          <label class="switch">
+            <input type="checkbox" name="WAVE1">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="field">
-    <label class="label">WAVE2</label>
-    <div class="control">
-      <label class="switch">
-        <input type="checkbox" name="WAVE2">
-        <span class="slider"></span>
-      </label>
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">
+      <label class="label">WAVE2</label>
+    </div>
+    <div class="field-body">
+      <div class="field">
+        <div class="control">
+          <label class="switch">
+            <input type="checkbox" name="WAVE2">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -127,10 +139,14 @@ const formTemplates = {
       <label class="label">WAVE3</label>
     </div>
     <div class="field-body">
-      <label class="switch is-rounded">
-        <input type="checkbox" name="WAVE3">
-        <span class="check"></span>
-      </label>
+      <div class="field">
+        <div class="control">
+          <label class="switch">
+            <input type="checkbox" name="WAVE3">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 `,
