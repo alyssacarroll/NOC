@@ -28,8 +28,6 @@ function getOrCreateConfigSheet() {
 }
 
 function doPost(e) {
-
-  const SCRIPT_TIMEZONE = Session.getScriptTimeZone();
   try {
     if (!e.postData || !e.postData.contents) {
       throw new Error("No post data received");
@@ -70,8 +68,8 @@ function doPost(e) {
     if (data.checkNumberStr === '07') {
       const dataSheet = SpreadsheetApp.openById(getMessageMetricsSpreadsheetId()).getSheetByName(NUMERIC_LOG_SHEET_NAME);
       const now = new Date();
-      const monthIndex = now.getMonth(); 
-      const day = now.getDate(); 
+      const monthIndex = now.getMonth();
+      const day = now.getDate();
 
       const monthColMap = {
         0: 2, 1: 8, 2: 14, 3: 20, 4: 26, 5: 32,  // Jan–Jun
@@ -132,9 +130,13 @@ function copyPreviousDaySheet() {
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
 
-  const tz = Session.getScriptTimeZone();
+  const tz = "America/New_York";
   const todayName = Utilities.formatDate(today, tz, "M/d/yy");
   const yesterdayName = Utilities.formatDate(yesterday, tz, "M/d/yy");
+
+  if (spreadsheet.getSheetByName(todayName)) {
+    throw new Error(`Sheet (${todayName}) already exists`);
+  }
 
   const previousSheet = spreadsheet.getSheetByName(yesterdayName);
   if (!previousSheet) throw new Error(`Sheet "${yesterdayName}" not found in "${spreadsheet.getName()}"`);
@@ -169,7 +171,7 @@ function copyPreviousDaySheet() {
 }
 
 function getTimeBlock() {
-  const tz = Session.getScriptTimeZone();
+  const tz = "America/New_York";
   const now = new Date();
   const hour = Number(Utilities.formatDate(now, tz, "H"));
   if (hour >= 0 && hour < 10) return "morning";
@@ -214,13 +216,13 @@ function findCheckRow(sheet, checkNum, timeBlock) {
   let startRow, endRow;
   if (timeBlock === "morning") {
     startRow = 8;
-    endRow = 39;
+    endRow = 61;
   } else if (timeBlock === "midday") {
-    startRow = 44;
-    endRow = 69;
+    startRow = 66;
+    endRow = 113;
   } else if (timeBlock === "endofday") {
-    startRow = 74;
-    endRow = 99;
+    startRow = 118;
+    endRow = 165;
   } else {
     return null;
   }
@@ -242,7 +244,7 @@ function findCheckRow(sheet, checkNum, timeBlock) {
 
 function writeToNocChecklist(data) {
   const spreadsheet = getOrCreateMonthlySpreadsheet();
-  const tz = Session.getScriptTimeZone();
+  const tz = "America/New_York";
   const todayName = Utilities.formatDate(new Date(), tz, "M/d/yy");
 
   let sheet = spreadsheet.getSheetByName(todayName);
@@ -268,9 +270,47 @@ function writeToNocChecklist(data) {
   // Checkbox in col B, Notes in row+1 col C
   sheet.getRange(row, 2).setValue(data.Completed === "TRUE" || data.Completed === true);
 
-  // === Append note with red text + bullet + date ===
-  if (data.Notes && data.Notes.trim()) {
-    const descriptionCell = sheet.getRange(row + 1, 3);
+  // Special handling for Check #10 (WAVE Servers)
+  if (checkNum === 10) {
+    const serverRows = {
+      "Fly-216N": row + 2,
+      "Fly-220": row + 3,
+      "Fly-222": row + 4,
+      "Fly-224": row + 5,
+      "Fly-226": row + 6,
+      "Fly-228": row + 7,
+      "Fly-230": row + 8,
+      "Fly-232": row + 9,
+      "Fly-234": row + 10,
+      "Fly-236": row + 11,
+      "Fly-238": row + 12,
+      "Fly-240": row + 13,
+      "Fly-242": row + 14,
+      "MED to VPI": row + 15,
+      "SA14WAVE511MS": row + 16,
+      "WAVE-PRXY12019.ptbportal.us": row + 18,
+      "WAVE-PRXY22019.ptbportal.us": row + 19,
+      "WAVE-MANMED2019.ptbportal.us": row + 21,
+      "EASTERN EUROPE Vocality": row + 23
+    };
+
+    const statusCol = 4; // Column D for status (next to server name in col C)
+    for (let server in serverRows) {
+      const row = serverRows[server];
+      const input = data[server]; // newStatus (from form or data input)
+      if (input !== undefined) {
+        const currentCellValue = sheet.getRange(row, statusCol).getValue();
+        const oldStatus = currentCellValue.toString().split(" - ")[0].trim();
+
+        if (oldStatus === input) continue; // No change
+
+        if (oldStatus === input) continue; // No change
+      }
+    }
+    
+    // === Append note with red text + bullet + date ===
+  } else if (data.Notes && data.Notes.trim()) {
+    const descriptionCell = sheet.getRange(row + 1, 3); // original fallback
     const existingText = descriptionCell.getValue();
     const datePrefix = Utilities.formatDate(new Date(), tz, "M/d/yy");
     const newBullet = `- ${datePrefix}: ${data.Notes.trim()}`;
@@ -290,10 +330,7 @@ function writeToNocChecklist(data) {
 
     descriptionCell.setRichTextValue(styledText);
   }
-
-  // You can add conditional formatting or font colors here if desired
 }
-
 
 /**
  * Saves a file to Google Drive
@@ -337,7 +374,7 @@ function appendToGoogleSheet(data, sheet) {
 }
 
 /**
- * Resets daily statuses for specific checks
+ * Resets statuses daily {at midnight} for all checks
  */
 function resetDailyStatuses() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(DATA_ENTRY_SHEET_NAME);
@@ -345,7 +382,6 @@ function resetDailyStatuses() {
   const values = dataRange.getValues();
   const headers = values[0];
 
-  const checkCol = headers.indexOf("Check #");
   const statusCol = headers.indexOf("Completed");
   const notesCol = headers.indexOf("Notes");
   const timestampCol = headers.indexOf("Timestamp");
@@ -354,7 +390,6 @@ function resetDailyStatuses() {
 
   for (let i = 1; i < values.length; i++) {
     const rowTimestamp = new Date(values[i][timestampCol]).toLocaleDateString();
-    const checkNum = values[i][checkCol];
 
     if (rowTimestamp !== today) {
       sheet.getRange(i + 1, statusCol + 1).setValue("FALSE");
@@ -384,47 +419,51 @@ function getOrCreateMonthlySpreadsheet() {
 
 
 function copyPreviousDaySheet() {
-  const spreadsheet = getOrCreateMonthlySpreadsheet();
-
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const tz = "America/New_York";
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
 
-  const tz = Session.getScriptTimeZone();
   const todayName = Utilities.formatDate(today, tz, "M/d/yy");
   const yesterdayName = Utilities.formatDate(yesterday, tz, "M/d/yy");
 
-  const previousSheet = spreadsheet.getSheetByName(yesterdayName);
-  if (!previousSheet) throw new Error(`Sheet "${yesterdayName}" not found in "${spreadsheet.getName()}"`);
+  if (spreadsheet.getSheetByName(todayName)) {
+    throw new Error(`Sheet (${todayName}) already exists`);
+  }
 
-  // Copy and rename
-  const newSheet = previousSheet.copyTo(spreadsheet).activate();
+  const prevSheet = spreadsheet.getSheetByName(yesterdayName);
+  if (!prevSheet) throw new Error(`Previous sheet (${yesterdayName}) not found`);
+
+  const newSheet = prevSheet.copyTo(spreadsheet);
   newSheet.setName(todayName);
+  spreadsheet.setActiveSheet(newSheet);
 
-  newSheet.getRange("C3").clearContent();
-  newSheet.getRange("C4").clearContent();
+  // Reset operator info
+  newSheet.getRange("C3").setValue(""); // Operator
+  newSheet.getRange("C4").setValue(todayName); // Date
 
-  const range = newSheet.getDataRange();
-  const values = range.getValues();
-  const numRows = values.length;
+  const data = newSheet.getRange("B6:B").getValues();
+  for (let i = 0; i < data.length; i++) {
+    const cellValue = data[i][0];
+    const checkboxCell = newSheet.getRange(i + 6, 2); // Column B
 
-  const checkboxCol = 2; // Column B
-  const titleCol = 3;    // Column C
-
-  for (let row = 1; row < numRows; row++) {
-    const checkboxValue = values[row][checkboxCol - 1];
-    const titleText = values[row][titleCol - 1];
-
-    if (typeof checkboxValue === "boolean") {
-      const checkboxCell = newSheet.getRange(row + 1, checkboxCol);
+    // Only reset checkboxes and notes if it's not WAVE
+    if (typeof cellValue === "boolean") {
       checkboxCell.setValue(false);
 
-      if (typeof titleText === 'string' && titleText.includes("WAVE")) continue;
+      const checkTitle = newSheet.getRange(i + 6, 3).getValue(); // Column C
+      const notesCell = newSheet.getRange(i + 7, 3); // Description cell under title
 
-      const descriptionRow = row + 2;
-      if (descriptionRow <= numRows) {
-        const descriptionCell = newSheet.getRange(descriptionRow, titleCol);
-        descriptionCell.setFontColor("blue");
+      // If this is Check 10 (WAVE), skip clearing
+      if (!checkTitle.toString().toLowerCase().includes("wave")) {
+        notesCell.setValue("").setFontColor("blue");
+      } else {
+        // WAVE special case — clear column D for rows under the server block
+        const waveRow = i + 6;
+        const waveStatusRange = newSheet.getRange(waveRow + 2, 4, 22, 1); // D[row+2 : row+23]
+        waveStatusRange.clearContent();
+        i += 22; // Skip past the WAVE block to avoid double-resetting
       }
     }
   }
