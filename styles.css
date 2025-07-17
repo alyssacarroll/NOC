@@ -257,3 +257,15 @@ a {
 .server-column .field {
   margin-bottom: 10px;
 }
+.fly-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  gap: 10px 30px; /* space between items */
+  padding: 20px;
+}
+
+.fly-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

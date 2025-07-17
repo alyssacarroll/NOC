@@ -102,50 +102,30 @@ const formTemplates = {
   '10': `
   <input type="hidden" name="checkNumber" value="10" />
 
-<div class="columns is-multiline">
+  <div class="fly-grid">
+  <div class="fly-item"><label><input type="checkbox" name="Fly-216N"> Fly-216N</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-220"> Fly-220</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-222"> Fly-222</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-224"> Fly-224</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-226"> Fly-226</label></div>
 
-  <!-- Column 1 -->
-  <div class="column is-one-quarter">
-    <div class="field"><label class="label">Fly-216N</label><label class="switch"><input type="checkbox" name="Fly-216N"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Fly-220</label><label class="switch"><input type="checkbox" name="Fly-220"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Fly-222</label><label class="switch"><input type="checkbox" name="Fly-222"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Fly-224</label><label class="switch"><input type="checkbox" name="Fly-224"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Fly-226</label><label class="switch"><input type="checkbox" name="Fly-226"><span class="slider"></span></label></div>
-  </div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-228"> Fly-228</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-230"> Fly-230</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-232"> Fly-232</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-234"> Fly-234</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-236"> Fly-236</label></div>
 
-  <!-- Column 2 -->
-  <div class="column is-one-quarter">
-    <div class="field"><label class="label">Fly-228</label><label class="switch"><input type="checkbox" name="Fly-228"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Fly-230</label><label class="switch"><input type="checkbox" name="Fly-230"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Fly-232</label><label class="switch"><input type="checkbox" name="Fly-232"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Fly-234</label><label class="switch"><input type="checkbox" name="Fly-234"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Fly-236</label><label class="switch"><input type="checkbox" name="Fly-236"><span class="slider"></span></label></div>
-  </div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-238"> Fly-238</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-240"> Fly-240</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-242"> Fly-242</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-244"> Fly-244</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-246"> Fly-246</label></div>
 
-  <!-- Column 3 -->
-  <div class="column is-one-quarter">
-    <div class="field"><label class="label">Fly-238</label><label class="switch"><input type="checkbox" name="Fly-238"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Fly-240</label><label class="switch"><input type="checkbox" name="Fly-240"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Fly-242</label><label class="switch"><input type="checkbox" name="Fly-242"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">MED to VPI</label><label class="switch"><input type="checkbox" name="MED to VPI"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">SA14WAVE511MS</label><label class="switch"><input type="checkbox" name="SA14WAVE511MS"><span class="slider"></span></label></div>
-  </div>
-
-  <!-- Column 4 -->
-  <div class="column is-one-quarter">
-    <div class="field"><label class="label">WAVE-PRXY12019.ptbportal.us</label><label class="switch"><input type="checkbox" name="WAVE-PRXY12019.ptbportal.us"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">WAVE-PRXY22019.ptbportal.us</label><label class="switch"><input type="checkbox" name="WAVE-PRXY22019.ptbportal.us"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">WAVE-MANMED2019.ptbportal.us</label><label class="switch"><input type="checkbox" name="WAVE-MANMED2019.ptbportal.us"><span class="slider"></span></label></div>
-    <div class="field"><label class="label">Eastern Europe Vocality</label><label class="switch"><input type="checkbox" name="Eastern Europe Vocality"><span class="slider"></span></label></div>
-  </div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-248"> Fly-248</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-250"> Fly-250</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-252"> Fly-252</label></div>
+  <div class="fly-item"><label><input type="checkbox" name="Fly-254"> Fly-254</label></div>
 </div>
-
-<div class="form-buttons">
-  <button class="submit">Submit</button>
-  <button class="close">Close</button>
-</div>
-
-
 `,
   // Eaton Dashboard Check
   '11': `
