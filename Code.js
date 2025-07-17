@@ -294,22 +294,44 @@ function writeToNocChecklist(data) {
       "EASTERN EUROPE Vocality": row + 23
     };
 
-    const statusCol = 4; // Column D for status (next to server name in col C)
-    for (let server in serverRows) {
-      const row = serverRows[server];
-      const input = data[server]; // newStatus (from form or data input)
-      if (input !== undefined) {
-        const currentCellValue = sheet.getRange(row, statusCol).getValue();
-        const oldStatus = currentCellValue.toString().split(" - ")[0].trim();
+    const statusCol = 4; // Column D
 
-        if (oldStatus === input) continue; // No change
+    for (const [server, targetRow] of Object.entries(serverRows)) {
+      const newValue = data[server];
+      if (newValue !== undefined) {
+        const cell = sheet.getRange(targetRow, statusCol);
+        const oldValue = cell.getValue().toString().trim();
 
-        if (oldStatus === input) continue; // No change
+        // Only update if value has changed
+        if (oldValue !== newValue) {
+          cell.setValue(newValue);
+
+          // Append red note below if status is not "TRUE"
+          if (newValue !== "TRUE") {
+            const descCell = sheet.getRange(targetRow + 1, 3); // Cell below server name in Col C
+            const oldNote = descCell.getValue();
+            const datePrefix = Utilities.formatDate(new Date(), tz, "M/d/yy");
+            const bullet = `- ${datePrefix}: ${server} status: ${newValue}`;
+            const newNote = oldNote ? `${oldNote}\n${bullet}` : bullet;
+
+            descCell.setValue(newNote);
+
+            const start = newNote.length - bullet.length;
+            const end = newNote.length;
+            const redStyle = SpreadsheetApp.newTextStyle().setForegroundColor("red").build();
+            const richText = SpreadsheetApp.newRichTextValue()
+              .setText(newNote)
+              .setTextStyle(start, end, redStyle)
+              .build();
+
+            descCell.setRichTextValue(richText);
+          }
+        }
       }
     }
-    
-    // === Append note with red text + bullet + date ===
-  } else if (data.Notes && data.Notes.trim()) {
+    return; // Skip the normal note-logging for this special case
+  }
+  else if (data.Notes && data.Notes.trim()) {
     const descriptionCell = sheet.getRange(row + 1, 3); // original fallback
     const existingText = descriptionCell.getValue();
     const datePrefix = Utilities.formatDate(new Date(), tz, "M/d/yy");

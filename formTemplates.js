@@ -103,7 +103,6 @@ const formTemplates = {
   <input type="hidden" name="checkNumber" value="10" />
 
   <div class="fly-grid">
-    <title>Media Servers</title>
     <div class="fly-item">
       <span>Fly-216N</span>
       <label class="switch"><input type="checkbox" name="Fly-216N"><span class="slider"></span></label>
