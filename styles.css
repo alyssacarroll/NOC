@@ -242,3 +242,18 @@ a {
   input:checked + .slider:before {
     transform: translateX(12px); /* Adjusted for smaller switch */
   }
+
+  .server-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.server-column {
+  flex: 1 1 30%;
+  min-width: 200px;
+}
+
+.server-column .field {
+  margin-bottom: 10px;
+}
