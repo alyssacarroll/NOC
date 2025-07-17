@@ -167,6 +167,41 @@
       const formData = new FormData(e.target);
       const formDataObj = Object.fromEntries(formData.entries());
 
+      const serverKeys = [
+        "Fly-216N",
+        "Fly-220",
+        "Fly-222",
+        "Fly-224",
+        "Fly-226",
+        "Fly-228",
+        "Fly-230",
+        "Fly-232",
+        "Fly-234",
+        "Fly-236",
+        "Fly-238",
+        "Fly-240",
+        "Fly-242",
+        "MED to VPI",
+        "SA14WAVE511MS",
+        "WAVE-PRXY12019.ptbportal.us",
+        "WAVE-PRXY22019.ptbportal.us",
+        "WAVE-MANMED2019.ptbportal.us",
+        "EASTERN EUROPE Vocality"
+      ];
+
+      // Invert slider values for WAVE check (check 10)
+      if (formDataObj.checkNumber === "10") {
+        for (const key of serverKeys) {
+          if (key in formDataObj) {
+            // Slider input might be "on" (checked) or undefined (unchecked)
+            // Convert that to boolean
+            const isChecked = formDataObj[key] === "on";
+            // Now invert and map to online/offline string:
+            formDataObj[key] = isChecked ? "offline" : "online";
+          }
+        }
+      }
+
       // Inject operator info
       formDataObj["Operator"] = localStorage.getItem("nocUserName") || "Unknown";
       formDataObj["Operator Date"] = localStorage.getItem("nocUserDate") || new Date().toLocaleDateString();
@@ -185,8 +220,8 @@
         formDataObj['Notes'] =
           `${formDataObj['Total Device Count']},
            ${formDataObj['Raw Messages']},
-            ${formDataObj['Unique IMEIs']},
-            ${formDataObj['Free Disk Space']}`;
+           ${formDataObj['Unique IMEIs']},
+           ${formDataObj['Free Disk Space']}`;
       }
 
       if (formDataObj['checkNumber'] === '10') {
@@ -225,6 +260,7 @@
       setTimeout(() => (messageDiv.textContent = ''), 4000);
     }
   }
+
 
   // -------- Initialization --------
   document.addEventListener("DOMContentLoaded", () => {
