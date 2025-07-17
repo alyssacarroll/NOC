@@ -133,6 +133,12 @@
     modalTitle.textContent = `Check ${checkNum}: ${title}`;
     formContent.innerHTML = formTemplates[checkNum] || `<p>Form for check ${checkNum} not available.</p>`;
 
+    // Add class only for Check 10
+    modal.classList.remove('wave-server-popup');
+    if (checkNum === '10') {
+      modal.classList.add('wave-server-popup');
+    }
+
     modal.style.display = 'block';
     backdrop.style.display = 'block';
 

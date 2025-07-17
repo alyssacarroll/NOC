@@ -116,8 +116,8 @@ a {
 }
 
 .wave-server-popup {
-    width: 1200px; /* Larger width for WAVE Server Check */
-    height: 500px; /* Larger height for WAVE Server Check */
+    width: 800px; /* Larger width for WAVE Server Check */
+    height: 400px; /* Larger height for WAVE Server Check */
     max-height: 90vh; /* Allow more vertical space */
   }
 
