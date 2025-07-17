@@ -209,6 +209,7 @@ a {
     width: 30px;
     height: 18px;
     vertical-align: middle;
+    margin-top: -2px;
   }
   .switch input {
     opacity: 0;
