@@ -193,7 +193,7 @@ a {
     gap: 3px; /* Further reduced gap */
     margin-bottom: 0.3rem ; /* Further reduced margin */
   }
-  .label {
+  .form-popup .label {
     margin: 0;
     font-size: 0.25rem !important; /* Smaller font size for labels */
   }
