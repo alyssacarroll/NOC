@@ -101,36 +101,171 @@ const formTemplates = {
   // WAVE Server Check
   '10': `
   <input type="hidden" name="checkNumber" value="10" />
-
-<div class="field">
-  <label class="label">WAVE1</label>
-  <div class="control">
-    <label class="switch">
-      <input type="checkbox" name="WAVE1">
-      <span class="slider"></span>
-    </label>
+  <div class="field">
+    <label class="label">Fly-216N</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-216N">
+        <span class="slider"></span>
+      </label>
+    </div>
   </div>
-</div>
-
-<div class="field">
-  <label class="label">WAVE2</label>
-  <div class="control">
-    <label class="switch">
-      <input type="checkbox" name="WAVE2">
-      <span class="slider"></span>
-    </label>
+  <div class="field">
+    <label class="label">Fly-220</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-220">
+        <span class="slider"></span>
+      </label>
+    </div>
   </div>
-</div>
-
-<div class="field">
-  <label class="label">WAVE3</label>
-  <div class="control">
-    <label class="switch">
-      <input type="checkbox" name="WAVE3">
-      <span class="slider"></span>
-    </label>
+  <div class="field">
+    <label class="label">Fly-222</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-222">
+        <span class="slider"></span>
+      </label>
+    </div>
   </div>
-</div>
+  <div class="field">
+    <label class="label">Fly-224</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-224">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Fly-226</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-226">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Fly-228</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-228">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Fly-230</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-230">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Fly-232</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-232">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Fly-234</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-234">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Fly-236</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-236">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Fly-238</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-238">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Fly-240</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-240">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Fly-242</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Fly-242">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div><div class="field">
+    <label class="label">MED to VPI</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="MED to VPI">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div><div class="field">
+    <label class="label">SA14WAVE511MS</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="SA14WAVE511MS">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div><div class="field">
+    <label class="label">WAVE-PRXY12019.ptbportal.us</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="WAVE-PRXY12019.ptbportal.us">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div><div class="field">
+    <label class="label">WAVE-PRXY22019.ptbportal.us</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="WAVE-PRXY22019.ptbportal.us">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div><div class="field">
+    <label class="label">WAVE-MANMED2019.ptbportal.us</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="WAVE-MANMED2019.ptbportal.us">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div><div class="field">
+    <label class="label">Eastern Europe Vocality</label>
+    <div class="control">
+      <label class="switch">
+        <input type="checkbox" name="Eastern Europe Vocality">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
 `,
   // Eaton Dashboard Check
   '11': `

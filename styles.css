@@ -195,7 +195,7 @@ a {
   }
   .label {
     margin: 0;
-    font-size: 0.80rem !important; /* Smaller font size for labels */
+    font-size: 0.90rem !important; /* Smaller font size for labels */
   }
   .switch {
     position: relative;
