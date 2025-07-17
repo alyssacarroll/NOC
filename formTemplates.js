@@ -126,16 +126,9 @@ const formTemplates = {
     <label class="label">WAVE3</label>
     <div class="control">
       <label class="switch">
-        <input type="checkbox" name="WAVE3">
-        <span class="slider"></span>
+        <span><input type="checkbox" name="WAVE3">
+        <span class="slider"></span></span>
       </label>
-    </div>
-  </div>
-
-  <div class="field">
-    <label class="label">Comments</label>
-    <div class="control">
-      <textarea class="textarea" name="Notes" rows="3" placeholder="Optional comments or issues..."></textarea>
     </div>
   </div>
 `,
