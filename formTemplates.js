@@ -156,6 +156,9 @@ const formTemplates = {
         </label>
       </div>
     </div>
+  </div>
+
+  <div class="field-container">
     <div class="field">
       <label class="label">Fly-230</label>
       <div class="control">
@@ -210,6 +213,8 @@ const formTemplates = {
         </label>
       </div>
     </div>
+  </div>
+  <div class="field-container">
     <div class="field">
       <label class="label">Fly-242</label>
       <div class="control">
@@ -264,6 +269,9 @@ const formTemplates = {
         </label>
       </div>
     </div>
+  </div>
+
+  <div class="field-container">
     <div class="field">
       <label class="label">Eastern Europe Vocality</label>
       <div class="control">
