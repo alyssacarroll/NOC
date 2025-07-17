@@ -190,19 +190,18 @@ a {
 .field {
     display: flex;
     align-items: center;
-    gap: 5px;               /*make smaller*/
-    margin-bottom: 0.5rem;  /*make smaller*/
+    gap: 6px; /* Further reduced gap */
+    margin-bottom: 0.6rem; /* Further reduced margin */
   }
   .label {
     margin: 0;
-    font-weight: bold;
-    font-size: 0.75rem;     /*make smaller*/
+    font-size: 0.75rem; /* Smaller font size for labels */
   }
   .switch {
     position: relative;
     display: inline-block;
-    width: 40px;            /*make smaller*/
-    height: 24px;           /*make smaller*/
+    width: 30px; /* Smaller switch width */
+    height: 18px; /* Smaller switch height */
   }
   .switch input {
     opacity: 0;
@@ -218,15 +217,15 @@ a {
     bottom: 0;
     background-color: #ccc;
     transition: 0.4s;
-    border-radius: 24px;    /*make smaller*/
+    border-radius: 18px; /* Adjusted for smaller switch */
   }
   .slider:before {
     position: absolute;
     content: "";
-    height: 18px;       /*make smaller*/
-    width: 18px;        /*make smaller*/
-    left: 3px;          /*make smaller*/
-    bottom: 3px;        /*make smaller*/
+    height: 14px; /* Smaller circle */
+    width: 14px; /* Smaller circle */
+    left: 2px; /* Adjusted positioning */
+    bottom: 2px; /* Adjusted positioning */
     background-color: white;
     transition: 0.4s;
     border-radius: 50%;
@@ -235,5 +234,5 @@ a {
     background-color: #2196F3;
   }
   input:checked + .slider:before {
-    transform: translateX(16px);    /*make smaller*/
+    transform: translateX(12px); /* Adjusted for smaller switch */
   }
