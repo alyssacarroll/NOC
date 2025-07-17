@@ -100,8 +100,6 @@ const formTemplates = {
   `,
   // WAVE Server Check
   '10': `
-  <div class="form-popup">
-  <h2>WAVE Server Check</h2>
   <input type="hidden" name="checkNumber" value="10" />
   <div class="field-container">
     <div class="field">
@@ -280,7 +278,6 @@ const formTemplates = {
     <button class="submit">Submit</button>
     <button class="close">Close</button>
   </div>
-</div>
 `,
   // Eaton Dashboard Check
   '11': `
