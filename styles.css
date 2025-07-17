@@ -206,8 +206,9 @@ a {
   .switch {
     position: relative;
     display: inline-block;
-    width: 30px; /* Smaller switch width */
-    height: 18px; /* Smaller switch height */
+    width: 30px;
+    height: 18px;
+    vertical-align: middle;
   }
   .switch input {
     opacity: 0;
