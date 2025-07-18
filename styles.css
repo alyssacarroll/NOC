@@ -288,8 +288,8 @@ input:checked+.slider-10:before {
 
 .fly-item {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: baseline;
+  /* gap: 10px; */
 }
 
 .on-hold-container {
