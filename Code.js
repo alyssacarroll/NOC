@@ -150,6 +150,10 @@ function copyPreviousDaySheet() {
   const numRows = values.length;
   const checkboxCol = 2; // Column B
   const titleCol = 3;    // Column C
+  
+  // Reset operator info
+  newSheet.getRange("C3").setValue(""); // Operator
+  newSheet.getRange("C4").setValue(todayName); // Date
 
   for (let row = 1; row < numRows; row++) {
     const checkboxValue = values[row][checkboxCol - 1];
@@ -306,7 +310,7 @@ function writeToNocChecklist(data) {
         if (oldValue !== newValue) {
           cell.setValue(newValue);
 
-          // Append red note below if status is not "TRUE"
+          // Append red note AFTERRRRRRRR if status is not "TRUE"
           if (newValue !== "TRUE") {
             const descCell = sheet.getRange(targetRow + 1, 3); // Cell below server name in Col C
             const oldNote = descCell.getValue();
@@ -437,56 +441,4 @@ function getOrCreateMonthlySpreadsheet() {
   folder.addFile(DriveApp.getFileById(newSheet.getId()));
   DriveApp.getRootFolder().removeFile(DriveApp.getFileById(newSheet.getId())); // remove from My Drive
   return newSheet;
-}
-
-
-function copyPreviousDaySheet() {
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  const tz = "America/New_York";
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
-
-  const todayName = Utilities.formatDate(today, tz, "M/d/yy");
-  const yesterdayName = Utilities.formatDate(yesterday, tz, "M/d/yy");
-
-  if (spreadsheet.getSheetByName(todayName)) {
-    throw new Error(`Sheet (${todayName}) already exists`);
-  }
-
-  const prevSheet = spreadsheet.getSheetByName(yesterdayName);
-  if (!prevSheet) throw new Error(`Previous sheet (${yesterdayName}) not found`);
-
-  const newSheet = prevSheet.copyTo(spreadsheet);
-  newSheet.setName(todayName);
-  spreadsheet.setActiveSheet(newSheet);
-
-  // Reset operator info
-  newSheet.getRange("C3").setValue(""); // Operator
-  newSheet.getRange("C4").setValue(todayName); // Date
-
-  const data = newSheet.getRange("B6:B").getValues();
-  for (let i = 0; i < data.length; i++) {
-    const cellValue = data[i][0];
-    const checkboxCell = newSheet.getRange(i + 6, 2); // Column B
-
-    // Only reset checkboxes and notes if it's not WAVE
-    if (typeof cellValue === "boolean") {
-      checkboxCell.setValue(false);
-
-      const checkTitle = newSheet.getRange(i + 6, 3).getValue(); // Column C
-      const notesCell = newSheet.getRange(i + 7, 3); // Description cell under title
-
-      // If this is Check 10 (WAVE), skip clearing
-      if (!checkTitle.toString().toLowerCase().includes("wave")) {
-        notesCell.setValue("").setFontColor("blue");
-      } else {
-        // WAVE special case — clear column D for rows under the server block
-        const waveRow = i + 6;
-        const waveStatusRange = newSheet.getRange(waveRow + 2, 4, 22, 1); // D[row+2 : row+23]
-        waveStatusRange.clearContent();
-        i += 22; // Skip past the WAVE block to avoid double-resetting
-      }
-    }
-  }
 }
