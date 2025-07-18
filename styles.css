@@ -117,11 +117,8 @@ a {
 
 .wave-server-popup {
   width: 950px;
-  /* Larger width for WAVE Server Check */
-  height: 350px;
-  /* Larger height for WAVE Server Check */
+  height: 400px;
   max-height: 90vh;
-  /* Allow more vertical space */
 }
 
 .form-popup h2 {
