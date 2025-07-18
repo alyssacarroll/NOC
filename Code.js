@@ -86,9 +86,9 @@ function doPost(e) {
       dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"] || "");
     }
 
-
     // -------- Write to Spreadsheet #3 ("NOC Checklist") ---------
     writeToNocChecklist(data);
+
 
     return ContentService.createTextOutput(
       JSON.stringify({ status: "success", message: "Success!" })
@@ -274,6 +274,11 @@ function writeToNocChecklist(data) {
   // Checkbox in col B, Notes in row+1 col C
   sheet.getRange(row, 2).setValue(data.Completed === "TRUE" || data.Completed === true);
 
+  // Special handling for Check #07 (Message Check)
+  if (checkNum === 7) {
+    descriptionCell.setValue(null);
+  }
+
   // Special handling for Check #10 (WAVE Servers)
   if (checkNum === 10) {
     const serverRows = {
@@ -335,6 +340,7 @@ function writeToNocChecklist(data) {
     }
     return; // Skip the normal note-logging for this special case
   }
+
   else if (data.Notes && data.Notes.trim()) {
     const descriptionCell = sheet.getRange(row + 1, 3); // original fallback
     const existingText = descriptionCell.getValue();
