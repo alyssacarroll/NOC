@@ -65,7 +65,9 @@ function doPost(e) {
     sheet1.getRange(rowToUpdate, 4).setValue(new Date());
 
     // ------------- Write to Spreadsheet #2 (Message Metrics) --------------
-    if (data.checkNumberStr === '07') {
+    Logger.log("Writing to Message Metrics spreadsheet...");
+    if (data.checkNumber === 7) {
+      Logger.log("Inside if checkNumber === 7");
       const dataSheet = SpreadsheetApp.openById(getMessageMetricsSpreadsheetId()).getSheetByName(NUMERIC_LOG_SHEET_NAME);
       const now = new Date();
       const monthIndex = now.getMonth();
@@ -80,20 +82,15 @@ function doPost(e) {
       const startRow = monthIndex < 6 ? 4 : 42; // Jan–Jun → row 4, Jul–Dec → row 42
       const targetRow = startRow + (day - 1);   // Adjust for 1-based days
 
-      Logger.log("Total Device Count:", data["Total Device Count"]);
-      Logger.log("Raw Messages:", data["Raw Messages"]);
-      Logger.log("Unique IMEIs:", data["Unique IMEIs"]);
-      Logger.log("Free Disk Space:", data["Free Disk Space"]);
-
       dataSheet.getRange(targetRow, startCol).setValue(data["Total Device Count"] || "");
       dataSheet.getRange(targetRow, startCol + 1).setValue(data["Raw Messages"] || "");
       dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"] || "");
       dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"] || "");
     }
 
+
     // -------- Write to Spreadsheet #3 ("NOC Checklist") ---------
     writeToNocChecklist(data);
-
 
     return ContentService.createTextOutput(
       JSON.stringify({ status: "success", message: "Success!" })
@@ -109,7 +106,7 @@ function doPost(e) {
 // --- Helper functions (include these somewhere in your script) ---
 
 function getOrCreateMonthlySpreadsheet() {
-  const SCRIPT_TIMEZONE = Session.getScriptTimeZone();
+  const SCRIPT_TIMEZONE = "America/New_York";
   const now = new Date();
   const monthName = Utilities.formatDate(now, SCRIPT_TIMEZONE, "MMM yy"); // e.g. "Jul 25"
   const folderIter = DriveApp.getFoldersByName("NOC");
@@ -149,16 +146,16 @@ function copyPreviousDaySheet() {
   const newSheet = previousSheet.copyTo(spreadsheet).activate();
   newSheet.setName(todayName);
 
+  // Reset operator info
+  newSheet.getRange("C3").setValue(""); // Operator
+  newSheet.getRange("C4").setValue(todayName); // Date
+
   // Reset checkboxes to FALSE and set description font color blue except for "WAVE" checks
   const range = newSheet.getDataRange();
   const values = range.getValues();
   const numRows = values.length;
   const checkboxCol = 2; // Column B
   const titleCol = 3;    // Column C
-
-  // Reset operator info
-  newSheet.getRange("C3").setValue(""); // Operator
-  newSheet.getRange("C4").setValue(todayName); // Date
 
   for (let row = 1; row < numRows; row++) {
     const checkboxValue = values[row][checkboxCol - 1];
@@ -279,6 +276,7 @@ function writeToNocChecklist(data) {
   // Checkbox in col B, Notes in row+1 col C
   sheet.getRange(row, 2).setValue(data.Completed === "TRUE" || data.Completed === true);
 
+
   // Special handling for Check #10 (WAVE Servers)
   if (checkNum === 10) {
     const serverRows = {
@@ -340,7 +338,6 @@ function writeToNocChecklist(data) {
     }
     return; // Skip the normal note-logging for this special case
   }
-
   else if (data.Notes && data.Notes.trim()) {
     const descriptionCell = sheet.getRange(row + 1, 3); // original fallback
     const existingText = descriptionCell.getValue();
@@ -364,7 +361,6 @@ function writeToNocChecklist(data) {
     // Special handling for Check #07 (Message Check)
     if (checkNum === 7) {
       descriptionCell.setValue(null);
-      return;
     }
   }
 }
@@ -434,22 +430,4 @@ function resetDailyStatuses() {
       sheet.getRange(i + 1, timestampCol + 1).setValue(""); // optional
     }
   }
-}
-
-function getOrCreateMonthlySpreadsheet() {
-  const now = new Date();
-  const monthName = now.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }); // e.g. "Jul '25"
-  const folder = DriveApp.getFoldersByName("NOC").next();
-
-  // Try to find existing spreadsheet
-  const files = folder.getFilesByName(`NOC Checklist - ${monthName}`);
-  if (files.hasNext()) {
-    return SpreadsheetApp.open(files.next());
-  }
-
-  // Otherwise, create new
-  const newSheet = SpreadsheetApp.create(`NOC Checklist - ${monthName}`);
-  folder.addFile(DriveApp.getFileById(newSheet.getId()));
-  DriveApp.getRootFolder().removeFile(DriveApp.getFileById(newSheet.getId())); // remove from My Drive
-  return newSheet;
 }

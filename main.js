@@ -206,6 +206,7 @@
         formDataObj['Completed'] = 'FALSE';
       }
 
+      // Message checks are marked completed if all 4 numbers are entered
       if (
         formData.has('Total Device Count') &&
         formData.has('Raw Messages') &&
@@ -213,8 +214,7 @@
         formData.has('Free Disk Space')
       ) {
         formDataObj['Completed'] = 'TRUE';
-        formDataObj['Notes'] =
-          `${formDataObj['Total Device Count']}, ${formDataObj['Raw Messages']}, ${formDataObj['Unique IMEIs']}, ${formDataObj['Free Disk Space']}`;
+        formDataObj['Notes'] = formDataObj['Total Device Count'] + ", " + formDataObj['Raw Messages'] + ", " + formDataObj['Unique IMEIs'] + ", " + formDataObj['Free Disk Space'];
       }
 
       if (formDataObj['checkNumber'] === '10') {
