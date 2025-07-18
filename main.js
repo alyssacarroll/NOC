@@ -302,6 +302,20 @@
     button.classList.toggle("is-danger", !isVisible);
   }
 
+  function submitSpreadsheetUrl() {
+  const input = document.getElementById("spreadsheetUrlInput");
+  const url = input.value.trim();
+
+  if (!url) {
+    alert("Please enter a URL.");
+    return;
+  }
+
+  localStorage.setItem("messageSpreadsheetUrl", url);
+  alert("URL saved!");
+}
+
+
 
 
   // -------- Initialization --------
