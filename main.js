@@ -214,10 +214,7 @@
       ) {
         formDataObj['Completed'] = 'TRUE';
         formDataObj['Notes'] =
-          `${stripNewlines(formDataObj['Total Device Count'])}, ` +
-          `${stripNewlines(formDataObj['Raw Messages'])}, ` +
-          `${stripNewlines(formDataObj['Unique IMEIs'])}, ` +
-          `${stripNewlines(formDataObj['Free Disk Space'])}`;
+          `${formDataObj['Total Device Count']}, ${formDataObj['Raw Messages']}, ${formDataObj['Unique IMEIs']}, ${formDataObj['Free Disk Space']}`;
       }
 
       if (formDataObj['checkNumber'] === '10') {
