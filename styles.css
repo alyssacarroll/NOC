@@ -95,7 +95,7 @@ a {
   border-color: gray;
   box-shadow: 0 0 10px gray;
   background-color: gray;
-  color: white;
+  color: rgba(255, 255, 255, 0.639);
 }
 
 
