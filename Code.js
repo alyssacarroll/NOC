@@ -313,30 +313,28 @@ function writeToNocChecklist(data) {
           // Append red note after if status is not "TRUE"
           if (newValue !== "TRUE") {
             const descCell = sheet.getRange(targetRow, statusCol + 1); // Cell after server status
-            const oldNote = descCell.getValue();
+            const oldRichText = descCell.getRichTextValue();
+            const oldNote = oldRichText ? oldRichText.getText() : "";
             const datePrefix = Utilities.formatDate(new Date(), tz, "M/d/yy");
             const bullet = `- ${datePrefix} status changed from ${oldValue} to ${newValue}`;
             const newNote = oldNote ? `${oldNote}\n${bullet}` : bullet;
 
-            const existingLength = oldNote ? oldNote.length : 0;
             const redStyle = SpreadsheetApp.newTextStyle().setForegroundColor("red").build();
             const blueStyle = SpreadsheetApp.newTextStyle().setForegroundColor("blue").build();
 
-            // Build full text with blue style by default
+            // Build full text with blue by default
             const builder = SpreadsheetApp.newRichTextValue()
               .setText(newNote)
               .setTextStyle(blueStyle);
 
-            // Then apply red only to the new bullet
-            const redStart = existingLength ? existingLength + 1 : 0; // +1 for newline if oldNote exists
+            // Apply red only to the newly added bullet
+            const redStart = oldNote ? oldNote.length + 1 : 0; // +1 for newline
             const redEnd = newNote.length;
             builder.setTextStyle(redStart, redEnd, redStyle);
 
-            // Write the styled comment
-            const styledValue = builder.build();
-            descCell.setRichTextValue(styledValue);
+            // Write the new rich text to the cell
+            descCell.setRichTextValue(builder.build());
           }
-
         }
       }
     }
