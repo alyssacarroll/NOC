@@ -1,4 +1,4 @@
-(() => {
+() => {
   const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRVOcAqswtmyk_vtsIiOeBy6zwv_jT4pxx_UOBlcsr-n4cxa0PnFluIvTP_E9yXk3nCB-SLWi_cOSiW/pub?output=csv";
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuQKu1YOgZvkhwhnOTdqAEnUMFCm7SkKziz6iqAU3YF4eyjHKglIONFgYLkMFo6X6-Tw/exec";
 
@@ -50,7 +50,6 @@
   function clearTileStatusClasses(tile) {
     tile.classList.remove('true', 'false', 'bad', 'warning', 'on-hold');
   }
-
   function updateSingleTileStatus(tileId, csvRows) {
     const tile = document.getElementById(tileId);
     if (!tile) return;
@@ -66,20 +65,18 @@
       if (statusDiv) statusDiv.textContent = "Status: On Hold";
       return;
     }
-
+    // Use provided CSV rows to avoid fetching
     const row = csvRows.find(r => r.split(",")[0] === tileId.padStart(2, "0"));
     if (row) {
       const [checkNum, statusRaw, notes, timestamp] = row.split(",");
       const status = statusRaw?.trim().toLowerCase();
 
       if (status) tile.classList.add(status);
-
       let statusName = "N/A";
       if (status === "true") statusName = "Complete";
       else if (status === "false") statusName = "Incomplete";
       else if (status === "warning") statusName = "Warning";
       else if (status === "bad") statusName = "Error";
-
       if (statusDiv) statusDiv.textContent = `Status: ${statusName}`;
     }
   }
@@ -90,9 +87,9 @@
       .then(csv => {
         const rows = csv.trim().split('\n').slice(1); // Skip header
         rows.forEach(row => {
-          const [checkNum] = row.split(",");
+          const [checkNum, statusRaw, notes, timestamp] = row.split(",");
           const tileId = checkNum.padStart(2, "0");
-          updateSingleTileStatus(tileId, rows);
+          updateSingleTileStatus(tileId, rows); // Pass rows to avoid refetching
         });
       })
       .catch(console.error);
@@ -137,7 +134,7 @@
     const backdrop = document.getElementById('modalBackdrop');
 
     modalTitle.textContent = `Check ${checkNum}: ${title}`;
-    formContent.innerHTML = window.formTemplates[checkNum] || `<p>Form for check ${checkNum} not available.</p>`;
+    formContent.innerHTML = formTemplates[checkNum] || `<p>Form for check ${checkNum} not available.</p>`;
 
     modal.classList.remove('wave-server-popup');
     if (checkNum === '10') {
@@ -150,23 +147,30 @@
     const form = document.getElementById('modalForm');
     form.reset();
 
+    // Setup On Hold toggle *after* form reset to preserve state
     const onHoldToggle = document.getElementById("onHoldToggle");
     const onHoldLabel = document.getElementById("onHoldLabel");
     const holdKey = `onHold_${checkNum}`;
     const isOnHold = localStorage.getItem(holdKey) === "true";
 
+    // Explicitly set checked state and attributes
     if (onHoldToggle) {
       onHoldToggle.checked = isOnHold;
       onHoldToggle.setAttribute('checked', isOnHold ? 'checked' : '');
       onHoldLabel.style.color = isOnHold ? "black" : "lightgray";
+      console.log(`Opening modal for Check ${checkNum}: onHold=${isOnHold}, checked=${onHoldToggle.checked}`);
+    } else {
+      console.error(`onHoldToggle not found for Check ${checkNum}`);
     }
 
+    // Sync toggle state with tile and storage
     if (onHoldToggle) {
       onHoldToggle.onchange = () => {
         const newHoldState = onHoldToggle.checked;
         localStorage.setItem(holdKey, newHoldState);
         onHoldLabel.style.color = newHoldState ? "black" : "lightgray";
-        updateSingleTileStatus(checkNum.padStart(2, "0"), []);
+        updateSingleTileStatus(checkNum.padStart(2, "0"), []); // Pass empty rows for on-hold update
+        console.log(`Toggle changed for Check ${checkNum}: onHold=${newHoldState}`);
       };
     }
 
@@ -176,7 +180,7 @@
   function closeModal() {
     document.getElementById('formModal').style.display = 'none';
     document.getElementById('modalBackdrop').style.display = 'none';
-    updateTileStatuses();
+    updateTileStatuses(); // Refresh all tiles after closing modal
   }
 
   // ------ Form Submission ---------
@@ -196,13 +200,28 @@
       formDataObj['checkNumberStr'] = formDataObj['checkNumber'];
 
       const serverKeys = [
-        "Fly-216N", "Fly-220", "Fly-222", "Fly-224", "Fly-226", "Fly-228",
-        "Fly-230", "Fly-232", "Fly-234", "Fly-236", "Fly-238", "Fly-240",
-        "Fly-242", "MED to VPI", "SA14WAVE511MS", "WAVE-PRXY12019.ptbportal.us",
-        "WAVE-PRXY22019.ptbportal.us", "WAVE-MANMED2019.ptbportal.us",
+        "Fly-216N",
+        "Fly-220",
+        "Fly-222",
+        "Fly-224",
+        "Fly-226",
+        "Fly-228",
+        "Fly-230",
+        "Fly-232",
+        "Fly-234",
+        "Fly-236",
+        "Fly-238",
+        "Fly-240",
+        "Fly-242",
+        "MED to VPI",
+        "SA14WAVE511MS",
+        "WAVE-PRXY12019.ptbportal.us",
+        "WAVE-PRXY22019.ptbportal.us",
+        "WAVE-MANMED2019.ptbportal.us",
         "EASTERN EUROPE Vocality"
       ];
 
+      // Invert slider values for WAVE check (check 10)
       if (formDataObj.checkNumber === "10") {
         for (const key of serverKeys) {
           const isChecked = formData.has(key);
@@ -211,6 +230,7 @@
         formDataObj['Completed'] = 'TRUE';
       }
 
+      // Inject operator info
       formDataObj["Operator"] = localStorage.getItem("nocUserName") || "Unknown";
       formDataObj["Operator Date"] = localStorage.getItem("nocUserDate") || new Date().toLocaleDateString();
 
@@ -218,6 +238,7 @@
         formDataObj['Completed'] = 'FALSE';
       }
 
+      // Message checks are marked completed if all 4 numbers are entered
       if (
         formData.has('Total Device Count') &&
         formData.has('Raw Messages') &&
@@ -225,7 +246,7 @@
         formData.has('Free Disk Space')
       ) {
         formDataObj['Completed'] = 'TRUE';
-        formDataObj['Notes'] = `${formDataObj['Total Device Count']}, ${formDataObj['Raw Messages']}, ${formDataObj['Unique IMEIs']}, ${formDataObj['Free Disk Space']}`;
+        formDataObj['Notes'] = formDataObj['Total Device Count'] + ", " + formDataObj['Raw Messages'] + ", " + formDataObj['Unique IMEIs'] + ", " + formDataObj['Free Disk Space'];
       }
 
       if (formDataObj['checkNumber'] === '10') {
@@ -265,59 +286,18 @@
     }
   }
 
-  // ------ Message Metrics Functions ------
-  function toggleMessageSheetBox() {
-    const box = document.getElementById('messageSheetBox');
-    box.style.display = box.style.display === 'none' ? 'block' : 'none';
-  }
-
-  async function submitSpreadsheetUrl() {
-    const url = document.getElementById('spreadsheetUrlInput').value.trim();
-    if (!url) {
-      alert('Please enter a spreadsheet URL');
-      return;
-    }
-    // Add logic to save URL (e.g., to localStorage or send to server)
-    console.log('Submitted URL:', url);
-    document.getElementById('messageSheetBox').style.display = 'none';
-  }
-
-  // ------ NOC Checklist Function ------
-  async function openNocChecklistSheet() {
-    const messageDiv = document.getElementById('message');
-    messageDiv.textContent = 'Loading NOC Checklist...';
-    messageDiv.style.backgroundColor = 'beige';
-    messageDiv.style.color = 'black';
-
-    try {
-      const response = await fetchJson(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'getNocChecklistURL' })
-      });
-
-      if (response.status === 'success' && response.url) {
-        messageDiv.textContent = 'Opening NOC Checklist...';
-        messageDiv.style.backgroundColor = '#48c78e';
-        messageDiv.style.color = 'white';
-        window.open(response.url, '_blank');
-      } else {
-        throw new Error(response.message || 'Failed to get NOC Checklist URL');
-      }
-    } catch (error) {
-      messageDiv.textContent = 'Error: ' + error.message;
-      messageDiv.style.backgroundColor = '#f14668';
-      messageDiv.style.color = 'white';
-      setTimeout(() => (messageDiv.textContent = ''), 4000);
-    }
-  }
-
   // -------- Initialization --------
   document.addEventListener("DOMContentLoaded", () => {
+    fetch('dashboard.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('dashboardContainer').innerHTML = html;
+      });
+
     fetch('modal.html')
       .then(res => res.text())
       .then(html => {
-        document.getElementById('formModal').innerHTML = html; // Update to target formModal directly
+        document.getElementById('modalContainer').innerHTML = html;
         document.getElementById('modalForm').addEventListener('submit', handleFormSubmit);
       });
 
@@ -328,10 +308,7 @@
     document.getElementById("userNameDisplay").addEventListener("click", promptUserNameChange);
   });
 
-  // Expose to global scope
+  // Expose to global (if needed)
   window.openModal = openModal;
   window.closeModal = closeModal;
-  window.toggleMessageSheetBox = toggleMessageSheetBox;
-  window.submitSpreadsheetUrl = submitSpreadsheetUrl;
-  window.openNocChecklistSheet = openNocChecklistSheet;
-})();
+}

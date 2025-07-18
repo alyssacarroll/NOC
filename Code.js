@@ -1,3 +1,7 @@
+
+
+
+
 const DATA_ENTRY_SHEET_NAME = "Sheet1";
 const TIME_STAMP_COLUMN_NAME = "Timestamp";
 const FOLDER_ID = "NOC";
@@ -35,20 +39,11 @@ function doPost(e) {
 
     const data = JSON.parse(e.postData.contents);
 
-    // Handle getNocChecklistURL action
-    if (data.action === 'getNocChecklistURL') {
-      const url = getNocChecklistURL();
-      return ContentService.createTextOutput(
-        JSON.stringify({ status: 'success', url: url })
-      ).setMimeType(ContentService.MimeType.JSON);
-    }
-
     // Validate required field checkNumber
     if (!data.checkNumber) {
       throw new Error("Missing checkNumber in payload");
-    }
-
-    // ------------- Write to Spreadsheet #1 --------------
+    };
+    // ------------- Write to Spreadsheet #1  --------------
     const ss1 = SpreadsheetApp.openById("1SQc0ZZU5j7dwcqYVr56hylA3mKp326Yggz8E3FJXlMc");
     const sheet1 = ss1.getSheetByName("Sheet1"); // Adjust if you use a different sheet name
 
@@ -93,6 +88,7 @@ function doPost(e) {
       dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"] || "");
       dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"] || "");
     }
+
 
     // -------- Write to Spreadsheet #3 ("NOC Checklist") ---------
     writeToNocChecklist(data);
@@ -320,11 +316,13 @@ function writeToNocChecklist(data) {
 
           // Append red note after if status is not "TRUE"
           if (newValue !== "TRUE") {
-            const descCell = sheet.getRange(targetRow, statusCol + 1); // Cell after status
+
+const descCell = sheet.getRange(targetRow, statusCol + 1); // Cell after status
             const oldRichText = descCell.getRichTextValue();
             const oldNote = oldRichText ? oldRichText.getText() : "";
             const datePrefix = Utilities.formatDate(new Date(), tz, "M/d/yy");
-            const newBullet = `- ${datePrefix} status changed from ${oldValue} to ${newValue}`;
+
+const newBullet = `- ${datePrefix} status changed from ${oldValue} to ${newValue}`;
 
             // Split existing lines and append new one
             const bullets = oldNote ? oldNote.split('\n') : [];
@@ -337,17 +335,16 @@ function writeToNocChecklist(data) {
             const redStyle = SpreadsheetApp.newTextStyle().setForegroundColor("red").build();
             const blueStyle = SpreadsheetApp.newTextStyle().setForegroundColor("blue").build();
 
-            // Build all text as blue
+// Build all text as blue
             const builder = SpreadsheetApp.newRichTextValue()
               .setText(newNote)
               .setTextStyle(blueStyle);
 
-            // Apply red to the last bullet only
+// Apply red to the last bullet only
             const redStart = newNote.lastIndexOf(newBullet);
             const redEnd = redStart + newBullet.length;
             builder.setTextStyle(redStart, redEnd, redStyle);
-
-            // Set the rich text value in the cell
+// Set the rich text value in the cell
             descCell.setRichTextValue(builder.build());
           }
         }
@@ -448,5 +445,3 @@ function resetDailyStatuses() {
     }
   }
 }
-
-
