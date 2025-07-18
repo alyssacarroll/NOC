@@ -35,11 +35,20 @@ function doPost(e) {
 
     const data = JSON.parse(e.postData.contents);
 
+    // Handle getNocChecklistURL action
+    if (data.action === 'getNocChecklistURL') {
+      const url = getNocChecklistURL();
+      return ContentService.createTextOutput(
+        JSON.stringify({ status: 'success', url: url })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+
     // Validate required field checkNumber
     if (!data.checkNumber) {
       throw new Error("Missing checkNumber in payload");
-    };
-    // ------------- Write to Spreadsheet #1  --------------
+    }
+
+    // ------------- Write to Spreadsheet #1 --------------
     const ss1 = SpreadsheetApp.openById("1SQc0ZZU5j7dwcqYVr56hylA3mKp326Yggz8E3FJXlMc");
     const sheet1 = ss1.getSheetByName("Sheet1"); // Adjust if you use a different sheet name
 
@@ -84,7 +93,6 @@ function doPost(e) {
       dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"] || "");
       dataSheet.getRange(targetRow, startCol + 3).setValue(data["Free Disk Space"] || "");
     }
-
 
     // -------- Write to Spreadsheet #3 ("NOC Checklist") ---------
     writeToNocChecklist(data);
