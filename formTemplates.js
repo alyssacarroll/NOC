@@ -12,7 +12,7 @@ const formTemplates = {
   // Tech Support Email Check
   '02': `
   <input type="hidden" name="checkNumber" value="02" />
-  <div class="form-popup">
+  <div class="form-content">
     <label><input type="checkbox" name="Completed" value="TRUE"> Email Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
