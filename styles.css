@@ -239,7 +239,7 @@ a {
   /* Adjusted for smaller switch */
 }
 
-.slider:before {
+.slider-10:before {
   position: absolute;
   content: "";
   height: 14px;
@@ -255,11 +255,11 @@ a {
   border-radius: 50%;
 }
 
-input:checked+.slider {
+input:checked+.slider-10 {
   background-color: #ea0000;
 }
 
-input:checked+.slider:before {
+input:checked+.slider-10:before {
   transform: translateX(-12px);
   /* Adjusted for smaller switch */
 }
