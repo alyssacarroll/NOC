@@ -277,6 +277,7 @@ function writeToNocChecklist(data) {
   // Special handling for Check #07 (Message Check)
   if (checkNum === 7) {
     descriptionCell.setValue(null);
+    return;
   }
 
   // Special handling for Check #10 (WAVE Servers)
