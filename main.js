@@ -165,7 +165,7 @@
   }
 
   // --------- Modal Handlers ---------
- function openModal(checkNum, title) {
+  function openModal(checkNum, title) {
     const modal = document.getElementById('formModal');
     const modalTitle = document.getElementById('modalTitle');
     const formContent = document.getElementById('formContent');
@@ -174,24 +174,6 @@
     modalTitle.textContent = `Check ${checkNum}: ${title}`;
     formContent.innerHTML = formTemplates[checkNum] || `<p>Form for check ${checkNum} not available.</p>`;
 
-    // Setup On Hold toggle
-    const onHoldToggle = document.getElementById("onHoldToggle");
-    const onHoldLabel = document.getElementById("onHoldLabel");
-    const holdKey = `onHold_${checkNum}`;
-    const isOnHold = localStorage.getItem(holdKey) === "true";
-
-    onHoldToggle.checked = isOnHold;
-    onHoldLabel.style.color = isOnHold ? "black" : "lightgray";
-
-    // Sync toggle state with tile and storage
-    onHoldToggle.onchange = () => {
-      const newHoldState = onHoldToggle.checked;
-      localStorage.setItem(holdKey, newHoldState);
-      onHoldLabel.style.color = newHoldState ? "black" : "lightgray";
-      updateSingleTileStatus(checkNum.padStart(2, "0")); // Update tile immediately
-    };
-
-    // Add class only for Check 10
     modal.classList.remove('wave-server-popup');
     if (checkNum === '10') {
       modal.classList.add('wave-server-popup');
@@ -202,6 +184,27 @@
 
     const form = document.getElementById('modalForm');
     form.reset();
+
+    // Setup On Hold toggle *after* form reset to preserve state
+    const onHoldToggle = document.getElementById("onHoldToggle");
+    const onHoldLabel = document.getElementById("onHoldLabel");
+    const holdKey = `onHold_${checkNum}`;
+    const isOnHold = localStorage.getItem(holdKey) === "true";
+
+    onHoldToggle.checked = isOnHold;
+    onHoldLabel.style.color = isOnHold ? "black" : "lightgray";
+
+    // Force visual update of slider
+    onHoldToggle.dispatchEvent(new Event('change'));
+
+    // Sync toggle state with tile and storage
+    onHoldToggle.onchange = () => {
+      const newHoldState = onHoldToggle.checked;
+      localStorage.setItem(holdKey, newHoldState);
+      onHoldLabel.style.color = newHoldState ? "black" : "lightgray";
+      updateSingleTileStatus(checkNum.padStart(2, "0")); // Update tile immediately
+    };
+
     document.getElementById('message').textContent = '';
   }
 
