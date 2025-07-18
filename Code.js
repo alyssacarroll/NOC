@@ -80,6 +80,11 @@ function doPost(e) {
       const startRow = monthIndex < 6 ? 4 : 42; // Jan–Jun → row 4, Jul–Dec → row 42
       const targetRow = startRow + (day - 1);   // Adjust for 1-based days
 
+      Logger.log("Total Device Count:", data["Total Device Count"]);
+      Logger.log("Raw Messages:", data["Raw Messages"]);
+      Logger.log("Unique IMEIs:", data["Unique IMEIs"]);
+      Logger.log("Free Disk Space:", data["Free Disk Space"]);
+
       dataSheet.getRange(targetRow, startCol).setValue(data["Total Device Count"] || "");
       dataSheet.getRange(targetRow, startCol + 1).setValue(data["Raw Messages"] || "");
       dataSheet.getRange(targetRow, startCol + 2).setValue(data["Unique IMEIs"] || "");
