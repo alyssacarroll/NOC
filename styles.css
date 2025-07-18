@@ -91,7 +91,7 @@ a {
   background-color: #f1c40f;
 }
 
-.warning {
+.on-hold {
   border-color: gray;
   box-shadow: 0 0 10px gray;
   background-color: gray;
@@ -353,7 +353,7 @@ input:checked+.slider:before {
 }
 
 input:checked+.slider {
-  background-color: #2196F3;
+  background-color: #575757;
 }
 
 input:checked+.slider:before {
