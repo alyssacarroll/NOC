@@ -46,6 +46,11 @@
     }
   }
 
+  // ------ Tile Status Updates ------
+  function clearTileStatusClasses(tile) {
+    tile.classList.remove('true', 'false', 'bad', 'warning', 'on-hold');
+  }
+
   function updateSingleTileStatus(tileId) {
     const tile = document.getElementById(tileId);
     if (!tile) return;
@@ -86,48 +91,16 @@
       .catch(console.error);
   }
 
-  // ------ Tile Status Updates ------
-  function clearTileStatusClasses(tile) {
-    tile.classList.remove('true', 'false', 'bad', 'on-hold');
-  }
-
   function updateTileStatuses() {
     fetch(CSV_URL)
       .then(res => res.text())
       .then(csv => {
-        const rows = csv.trim().split('\n').slice(1); // skip header
-        const todayStr = new Date().toLocaleDateString();
-
+        const rows = csv.trim().split('\n').slice(1); // Skip header
         rows.forEach(row => {
           const [checkNum, statusRaw, notes, timestamp] = row.split(",");
           const status = statusRaw?.trim().toLowerCase();
           const tileId = checkNum.padStart(2, "0");
-          const timestampDate = new Date(timestamp).toLocaleDateString();
-          const tile = document.getElementById(tileId);
-          const holdKey = `onHold_${tileId}`;
-          const isOnHold = localStorage.getItem(holdKey) === "true";
-
-          if (!tile) return;
-
-          clearTileStatusClasses(tile);
-
-          const statusDiv = tile.querySelector(".tile-status");
-
-          if (isOnHold) {
-            tile.classList.add("on-hold");
-            if (statusDiv) statusDiv.textContent = "Status: On Hold";
-            return;
-          }
-
-          if (status) tile.classList.add(status);
-
-          let statusName = "N/A";
-          if (status === "true") statusName = "Complete";
-          else if (status === "false") statusName = "Incomplete";
-          else if (status === "warning") statusName = "Warning";
-          else if (status === "bad") statusName = "Error";
-
-          if (statusDiv) statusDiv.textContent = `Status: ${statusName}`;
+          updateSingleTileStatus(tileId);
         });
       })
       .catch(console.error);
@@ -191,11 +164,13 @@
     const holdKey = `onHold_${checkNum}`;
     const isOnHold = localStorage.getItem(holdKey) === "true";
 
+    // Explicitly set checked state and attributes
     onHoldToggle.checked = isOnHold;
+    onHoldToggle.setAttribute('checked', isOnHold ? 'checked' : '');
     onHoldLabel.style.color = isOnHold ? "black" : "lightgray";
 
-    // Force visual update of slider
-    onHoldToggle.dispatchEvent(new Event('change'));
+    // Debug toggle state
+    console.log(`Opening modal for Check ${checkNum}: onHold=${isOnHold}, checked=${onHoldToggle.checked}`);
 
     // Sync toggle state with tile and storage
     onHoldToggle.onchange = () => {
@@ -203,6 +178,7 @@
       localStorage.setItem(holdKey, newHoldState);
       onHoldLabel.style.color = newHoldState ? "black" : "lightgray";
       updateSingleTileStatus(checkNum.padStart(2, "0")); // Update tile immediately
+      console.log(`Toggle changed for Check ${checkNum}: onHold=${newHoldState}`);
     };
 
     document.getElementById('message').textContent = '';
@@ -211,7 +187,7 @@
   function closeModal() {
     document.getElementById('formModal').style.display = 'none';
     document.getElementById('modalBackdrop').style.display = 'none';
-    updateTileStatuses(); // Refresh tile statuses after closing modal
+    updateTileStatuses(); // Refresh all tiles after closing modal
   }
 
   // ------ Form Submission ---------
@@ -229,7 +205,6 @@
       const formData = new FormData(e.target);
       const formDataObj = Object.fromEntries(formData.entries());
       formDataObj['checkNumberStr'] = formDataObj['checkNumber'];
-
 
       const serverKeys = [
         "Fly-216N",
@@ -256,7 +231,7 @@
       // Invert slider values for WAVE check (check 10)
       if (formDataObj.checkNumber === "10") {
         for (const key of serverKeys) {
-          const isChecked = formData.has(key); // true if checked, false if not present
+          const isChecked = formData.has(key);
           formDataObj[key] = isChecked ? "offline" : "online";
         }
         formDataObj['Completed'] = 'TRUE';
@@ -318,7 +293,6 @@
     }
   }
 
-
   // -------- Initialization --------
   document.addEventListener("DOMContentLoaded", () => {
     fetch('dashboard.html')
@@ -331,10 +305,8 @@
       .then(res => res.text())
       .then(html => {
         document.getElementById('modalContainer').innerHTML = html;
-        // Now that modalForm is in the DOM, attach listener:
         document.getElementById('modalForm').addEventListener('submit', handleFormSubmit);
       });
-
 
     loadUserName();
     displayCurrentDate();
@@ -342,7 +314,6 @@
 
     document.getElementById("userNameDisplay").addEventListener("click", promptUserNameChange);
   });
-
 
   // Expose to global (if needed)
   window.openModal = openModal;
