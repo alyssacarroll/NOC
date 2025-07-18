@@ -213,13 +213,11 @@
         formData.has('Free Disk Space')
       ) {
         formDataObj['Completed'] = 'TRUE';
-        const sanitize = val => String(val).replace(/[\r\n]+/g, ' ').trim();
-        formDataObj['Notes'] = [
-          formDataObj['Total Device Count'],
-          formDataObj['Raw Messages'],
-          formDataObj['Unique IMEIs'],
-          formDataObj['Free Disk Space']
-        ].map(sanitize).join(', ');
+        formDataObj['Notes'] =
+          `${stripNewlines(formDataObj['Total Device Count'])}, ` +
+          `${stripNewlines(formDataObj['Raw Messages'])}, ` +
+          `${stripNewlines(formDataObj['Unique IMEIs'])}, ` +
+          `${stripNewlines(formDataObj['Free Disk Space'])}`;
       }
 
       if (formDataObj['checkNumber'] === '10') {
