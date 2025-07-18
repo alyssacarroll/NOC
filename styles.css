@@ -211,7 +211,7 @@ a {
   /* Smaller font size for labels */
 }
 
-.switch {
+.switch-10 {
   position: relative;
   display: inline-block;
   width: 30px;
@@ -220,7 +220,7 @@ a {
   margin-top: -2px;
 }
 
-.switch input {
+.switch-10 input {
   opacity: 0;
   width: 0;
   height: 0;
