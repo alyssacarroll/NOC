@@ -3,7 +3,7 @@ const formTemplates = {
   '01': `
   <input type="hidden" name="checkNumber" value="01" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Walkthrough Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Walkthrough Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
     </label>
@@ -13,7 +13,7 @@ const formTemplates = {
   '02': `
   <input type="hidden" name="checkNumber" value="02" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Email Checked</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Email Checked</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
     </label>
@@ -23,7 +23,7 @@ const formTemplates = {
   '03': `
   <input type="hidden" name="checkNumber" value="03" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="2" style="width:100%;"></textarea>
     </label>
@@ -33,7 +33,7 @@ const formTemplates = {
   '04': `
   <input type="hidden" name="checkNumber" value="04" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="2" style="width:100%;"></textarea>
     </label>
@@ -43,7 +43,7 @@ const formTemplates = {
   '05': `
   <input type="hidden" name="checkNumber" value="05" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="2" style="width:100%;"></textarea>
     </label>
@@ -53,7 +53,7 @@ const formTemplates = {
   '06': `
   <input type="hidden" name="checkNumber" value="06" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="2" style="width:100%;"></textarea>
     </label>
@@ -83,7 +83,7 @@ const formTemplates = {
   '08': `
   <input type="hidden" name="checkNumber" value="08" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
     </label>
@@ -93,7 +93,7 @@ const formTemplates = {
   '09': `
   <input type="hidden" name="checkNumber" value="09" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
     </label>
@@ -189,7 +189,7 @@ const formTemplates = {
   '11': `
   <input type="hidden" name="checkNumber" value="11" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
     </label>
@@ -199,7 +199,7 @@ const formTemplates = {
   '12': `
   <input type="hidden" name="checkNumber" value="12" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
     </label>
@@ -209,7 +209,7 @@ const formTemplates = {
   '13': `
   <input type="hidden" name="checkNumber" value="13" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Daily Backup Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Daily Backup Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
     </label>
@@ -219,7 +219,7 @@ const formTemplates = {
   '14': `
   <input type="hidden" name="checkNumber" value="14" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
     </label>
@@ -229,7 +229,7 @@ const formTemplates = {
   '15': `
   <input type="hidden" name="checkNumber" value="15" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
     </label>
@@ -239,7 +239,7 @@ const formTemplates = {
   '16': `
   <input type="hidden" name="checkNumber" value="16" />
   <div class="form-content">
-    <label><input type="checkbox" name="Completed" value="TRUE">Check Completed</label>
+    <label><input type="checkbox" name="Completed" value="TRUE"> Check Completed</label>
     <label>Comments:
       <textarea name="Notes" rows="3" style="width:100%;"></textarea>
     </label>
