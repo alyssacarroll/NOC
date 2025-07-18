@@ -290,24 +290,6 @@
     }
   }
 
-  async function openNocChecklistSheet() {
-    try {
-      const response = await fetchJson(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'getNocChecklistURL' })
-      });
-
-      if (response.status === 'success' && response.url) {
-        window.open(response.url, '_blank');
-      } else {
-        alert('Error opening NOC Checklist: ' + (response.message || 'Unknown error'));
-      }
-    } catch (err) {
-      alert('Error opening NOC Checklist: ' + err.message);
-    }
-  }
-
 
   // -------- Initialization --------
   document.addEventListener("DOMContentLoaded", () => {
