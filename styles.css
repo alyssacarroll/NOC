@@ -285,6 +285,7 @@ input:checked+.slider-10:before {
   display: flex;
   align-items: baseline;
   gap: 10px;
+  padding-top: 5px;;
 }
 
 .on-hold-container {
