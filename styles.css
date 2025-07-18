@@ -93,7 +93,7 @@ a {
 
 .on-hold {
   border-color: gray;
-  box-shadow: 0 0 10px gray;
+  box-shadow: 0 0 10px rgb(156, 156, 156);
   background-color: gray;
   color: rgba(255, 255, 255, 0.639);
 }
