@@ -150,7 +150,7 @@ function copyPreviousDaySheet() {
   const numRows = values.length;
   const checkboxCol = 2; // Column B
   const titleCol = 3;    // Column C
-  
+
   // Reset operator info
   newSheet.getRange("C3").setValue(""); // Operator
   newSheet.getRange("C4").setValue(todayName); // Date
@@ -274,12 +274,6 @@ function writeToNocChecklist(data) {
   // Checkbox in col B, Notes in row+1 col C
   sheet.getRange(row, 2).setValue(data.Completed === "TRUE" || data.Completed === true);
 
-  // Special handling for Check #07 (Message Check)
-  if (checkNum === 7) {
-    descCell.setValue(null);
-    return;
-  }
-
   // Special handling for Check #10 (WAVE Servers)
   if (checkNum === 10) {
     const serverRows = {
@@ -362,6 +356,11 @@ function writeToNocChecklist(data) {
       .build();
 
     descriptionCell.setRichTextValue(styledText);
+    // Special handling for Check #07 (Message Check)
+    if (checkNum === 7) {
+      descriptionCell.setValue(null);
+      return;
+    }
   }
 }
 
