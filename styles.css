@@ -214,7 +214,7 @@ a {
   width: 30px;
   height: 18px;
   vertical-align: middle;
-  margin-top: 0px;
+  margin-top: 5px;
   transform: translateY(-1px);
 }
 
@@ -234,20 +234,15 @@ a {
   background-color: #10c100;
   transition: 0.4s;
   border-radius: 18px;
-  /* Adjusted for smaller switch */
 }
 
 .slider-10:before {
   position: absolute;
   content: "";
   height: 14px;
-  /* Smaller circle */
   width: 14px;
-  /* Smaller circle */
   right: 2px;
-  /* Adjusted positioning */
   bottom: 2px;
-  /* Adjusted positioning */
   background-color: white;
   transition: 0.4s;
   border-radius: 50%;
