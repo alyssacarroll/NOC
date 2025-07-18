@@ -46,9 +46,49 @@
     }
   }
 
+  function updateSingleTileStatus(tileId) {
+    const tile = document.getElementById(tileId);
+    if (!tile) return;
+
+    const holdKey = `onHold_${tileId}`;
+    const isOnHold = localStorage.getItem(holdKey) === "true";
+    const statusDiv = tile.querySelector(".tile-status");
+
+    clearTileStatusClasses(tile);
+
+    if (isOnHold) {
+      tile.classList.add("on-hold");
+      if (statusDiv) statusDiv.textContent = "Status: On Hold";
+      return;
+    }
+
+    // Fetch status from CSV if not on hold
+    fetch(CSV_URL)
+      .then(res => res.text())
+      .then(csv => {
+        const rows = csv.trim().split('\n').slice(1); // Skip header
+        const row = rows.find(r => r.split(",")[0] === tileId.padStart(2, "0"));
+        if (row) {
+          const [checkNum, statusRaw, notes, timestamp] = row.split(",");
+          const status = statusRaw?.trim().toLowerCase();
+
+          if (status) tile.classList.add(status);
+
+          let statusName = "N/A";
+          if (status === "true") statusName = "Complete";
+          else if (status === "false") statusName = "Incomplete";
+          else if (status === "warning") statusName = "Warning";
+          else if (status === "bad") statusName = "Error";
+
+          if (statusDiv) statusDiv.textContent = `Status: ${statusName}`;
+        }
+      })
+      .catch(console.error);
+  }
+
   // ------ Tile Status Updates ------
   function clearTileStatusClasses(tile) {
-    tile.classList.remove('true', 'false', 'bad', 'warning');
+    tile.classList.remove('true', 'false', 'bad', 'on-hold');
   }
 
   function updateTileStatuses() {
@@ -125,7 +165,7 @@
   }
 
   // --------- Modal Handlers ---------
-  function openModal(checkNum, title) {
+ function openModal(checkNum, title) {
     const modal = document.getElementById('formModal');
     const modalTitle = document.getElementById('modalTitle');
     const formContent = document.getElementById('formContent');
@@ -148,11 +188,8 @@
       const newHoldState = onHoldToggle.checked;
       localStorage.setItem(holdKey, newHoldState);
       onHoldLabel.style.color = newHoldState ? "black" : "lightgray";
-
-      const tile = document.getElementById(checkNum.padStart(2, "0"));
-      if (tile) tile.classList.toggle("on-hold", newHoldState);
+      updateSingleTileStatus(checkNum.padStart(2, "0")); // Update tile immediately
     };
-
 
     // Add class only for Check 10
     modal.classList.remove('wave-server-popup');
@@ -171,6 +208,7 @@
   function closeModal() {
     document.getElementById('formModal').style.display = 'none';
     document.getElementById('modalBackdrop').style.display = 'none';
+    updateTileStatuses(); // Refresh tile statuses after closing modal
   }
 
   // ------ Form Submission ---------
