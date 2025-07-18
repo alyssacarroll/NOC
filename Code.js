@@ -312,27 +312,34 @@ function writeToNocChecklist(data) {
 
           // Append red note after if status is not "TRUE"
           if (newValue !== "TRUE") {
-            const descCell = sheet.getRange(targetRow, statusCol + 1); // Cell after server status
+            const descCell = sheet.getRange(targetRow, statusCol + 1); // Cell after status
             const oldRichText = descCell.getRichTextValue();
             const oldNote = oldRichText ? oldRichText.getText() : "";
             const datePrefix = Utilities.formatDate(new Date(), tz, "M/d/yy");
-            const bullet = `- ${datePrefix} status changed from ${oldValue} to ${newValue}`;
-            const newNote = oldNote ? `${oldNote}\n${bullet}` : bullet;
+            const newBullet = `- ${datePrefix} status changed from ${oldValue} to ${newValue}`;
+
+            // Split existing lines and append new one
+            const bullets = oldNote ? oldNote.split('\n') : [];
+            bullets.push(newBullet);
+
+            // Keep only the last 5 bullets
+            const recentBullets = bullets.slice(-5);
+            const newNote = recentBullets.join('\n');
 
             const redStyle = SpreadsheetApp.newTextStyle().setForegroundColor("red").build();
             const blueStyle = SpreadsheetApp.newTextStyle().setForegroundColor("blue").build();
 
-            // Build full text with blue by default
+            // Build all text as blue
             const builder = SpreadsheetApp.newRichTextValue()
               .setText(newNote)
               .setTextStyle(blueStyle);
 
-            // Apply red only to the newly added bullet
-            const redStart = oldNote ? oldNote.length + 1 : 0; // +1 for newline
-            const redEnd = newNote.length;
+            // Apply red to the last bullet only
+            const redStart = newNote.lastIndexOf(newBullet);
+            const redEnd = redStart + newBullet.length;
             builder.setTextStyle(redStart, redEnd, redStyle);
 
-            // Write the new rich text to the cell
+            // Set the rich text value in the cell
             descCell.setRichTextValue(builder.build());
           }
         }
