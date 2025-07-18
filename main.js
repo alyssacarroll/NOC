@@ -51,7 +51,7 @@
     tile.classList.remove('true', 'false', 'bad', 'warning', 'on-hold');
   }
 
-  function updateSingleTileStatus(tileId) {
+  function updateSingleTileStatus(tileId, csvRows) {
     const tile = document.getElementById(tileId);
     if (!tile) return;
 
@@ -67,28 +67,22 @@
       return;
     }
 
-    // Fetch status from CSV if not on hold
-    fetch(CSV_URL)
-      .then(res => res.text())
-      .then(csv => {
-        const rows = csv.trim().split('\n').slice(1); // Skip header
-        const row = rows.find(r => r.split(",")[0] === tileId.padStart(2, "0"));
-        if (row) {
-          const [checkNum, statusRaw, notes, timestamp] = row.split(",");
-          const status = statusRaw?.trim().toLowerCase();
+    // Use provided CSV rows to avoid fetching
+    const row = csvRows.find(r => r.split(",")[0] === tileId.padStart(2, "0"));
+    if (row) {
+      const [checkNum, statusRaw, notes, timestamp] = row.split(",");
+      const status = statusRaw?.trim().toLowerCase();
 
-          if (status) tile.classList.add(status);
+      if (status) tile.classList.add(status);
 
-          let statusName = "N/A";
-          if (status === "true") statusName = "Complete";
-          else if (status === "false") statusName = "Incomplete";
-          else if (status === "warning") statusName = "Warning";
-          else if (status === "bad") statusName = "Error";
+      let statusName = "N/A";
+      if (status === "true") statusName = "Complete";
+      else if (status === "false") statusName = "Incomplete";
+      else if (status === "warning") statusName = "Warning";
+      else if (status === "bad") statusName = "Error";
 
-          if (statusDiv) statusDiv.textContent = `Status: ${statusName}`;
-        }
-      })
-      .catch(console.error);
+      if (statusDiv) statusDiv.textContent = `Status: ${statusName}`;
+    }
   }
 
   function updateTileStatuses() {
@@ -98,9 +92,8 @@
         const rows = csv.trim().split('\n').slice(1); // Skip header
         rows.forEach(row => {
           const [checkNum, statusRaw, notes, timestamp] = row.split(",");
-          const status = statusRaw?.trim().toLowerCase();
           const tileId = checkNum.padStart(2, "0");
-          updateSingleTileStatus(tileId);
+          updateSingleTileStatus(tileId, rows); // Pass rows to avoid refetching
         });
       })
       .catch(console.error);
@@ -165,21 +158,25 @@
     const isOnHold = localStorage.getItem(holdKey) === "true";
 
     // Explicitly set checked state and attributes
-    onHoldToggle.checked = isOnHold;
-    onHoldToggle.setAttribute('checked', isOnHold ? 'checked' : '');
-    onHoldLabel.style.color = isOnHold ? "black" : "lightgray";
-
-    // Debug toggle state
-    console.log(`Opening modal for Check ${checkNum}: onHold=${isOnHold}, checked=${onHoldToggle.checked}`);
+    if (onHoldToggle) {
+      onHoldToggle.checked = isOnHold;
+      onHoldToggle.setAttribute('checked', isOnHold ? 'checked' : '');
+      onHoldLabel.style.color = isOnHold ? "black" : "lightgray";
+      console.log(`Opening modal for Check ${checkNum}: onHold=${isOnHold}, checked=${onHoldToggle.checked}`);
+    } else {
+      console.error(`onHoldToggle not found for Check ${checkNum}`);
+    }
 
     // Sync toggle state with tile and storage
-    onHoldToggle.onchange = () => {
-      const newHoldState = onHoldToggle.checked;
-      localStorage.setItem(holdKey, newHoldState);
-      onHoldLabel.style.color = newHoldState ? "black" : "lightgray";
-      updateSingleTileStatus(checkNum.padStart(2, "0")); // Update tile immediately
-      console.log(`Toggle changed for Check ${checkNum}: onHold=${newHoldState}`);
-    };
+    if (onHoldToggle) {
+      onHoldToggle.onchange = () => {
+        const newHoldState = onHoldToggle.checked;
+        localStorage.setItem(holdKey, newHoldState);
+        onHoldLabel.style.color = newHoldState ? "black" : "lightgray";
+        updateSingleTileStatus(checkNum.padStart(2, "0"), []); // Pass empty rows for on-hold update
+        console.log(`Toggle changed for Check ${checkNum}: onHold=${newHoldState}`);
+      };
+    }
 
     document.getElementById('message').textContent = '';
   }
