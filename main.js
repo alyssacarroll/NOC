@@ -290,6 +290,18 @@
     }
   }
 
+  function openNocChecklistSheet() {
+  google.script.run
+    .withSuccessHandler((url) => {
+      window.open(url, '_blank');
+    })
+    .withFailureHandler((err) => {
+      alert("Error opening NOC Checklist: " + err.message);
+    })
+    .getNocChecklistURL();
+}
+
+
   // -------- Initialization --------
   document.addEventListener("DOMContentLoaded", () => {
     fetch('dashboard.html')

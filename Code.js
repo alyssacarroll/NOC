@@ -440,3 +440,24 @@ function resetDailyStatuses() {
     }
   }
 }
+
+function getNocChecklistURL() {
+  const SCRIPT_TIMEZONE = "America/New_York";
+  const now = new Date();
+  const monthName = Utilities.formatDate(now, SCRIPT_TIMEZONE, "MMM yy"); // e.g. "Jul 25"
+  const folderIter = DriveApp.getFoldersByName("NOC");
+  if (!folderIter.hasNext()) throw new Error("NOC folder not found in Drive");
+  const folder = folderIter.next();
+  const todayName = Utilities.formatDate(now, SCRIPT_TIMEZONE, "M/d/yy");
+
+  const files = folder.getFilesByName(`NOC Checklist - ${monthName}`);
+  if (files.hasNext()) {
+    let spreadsheet = SpreadsheetApp.open(files.next());
+    if (!spreadsheet) throw new Error("Spreadsheet not found");
+    const sheet = spreadsheet.getSheetByName(todayName);
+    if (!sheet) throw new Error("Sheet for today not found");
+    return sheet.getParent().getUrl() + `#gid=${sheet.getSheetId()}`;
+  } else {
+    throw new Error("Monthly NOC Checklist file not found");
+  }
+}
