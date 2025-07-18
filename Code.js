@@ -38,8 +38,7 @@ function doPost(e) {
     // Validate required field checkNumber
     if (!data.checkNumber) {
       throw new Error("Missing checkNumber in payload");
-    }
-
+    };
     // ------------- Write to Spreadsheet #1  --------------
     const ss1 = SpreadsheetApp.openById("1SQc0ZZU5j7dwcqYVr56hylA3mKp326Yggz8E3FJXlMc");
     const sheet1 = ss1.getSheetByName("Sheet1"); // Adjust if you use a different sheet name
@@ -65,9 +64,7 @@ function doPost(e) {
     sheet1.getRange(rowToUpdate, 4).setValue(new Date());
 
     // ------------- Write to Spreadsheet #2 (Message Metrics) --------------
-    Logger.log("Writing to Message Metrics spreadsheet...");
-    if (data.checkNumber === 7) {
-      Logger.log("Inside if checkNumber === 7");
+    if (data.checkNumberStr === "07") {
       const dataSheet = SpreadsheetApp.openById(getMessageMetricsSpreadsheetId()).getSheetByName(NUMERIC_LOG_SHEET_NAME);
       const now = new Date();
       const monthIndex = now.getMonth();

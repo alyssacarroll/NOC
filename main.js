@@ -166,6 +166,8 @@
     try {
       const formData = new FormData(e.target);
       const formDataObj = Object.fromEntries(formData.entries());
+      formDataObj['checkNumberStr'] = formDataObj['checkNumber'];
+
 
       const serverKeys = [
         "Fly-216N",
