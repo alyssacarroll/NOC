@@ -286,14 +286,26 @@
     }
   }
 
+  function toggleMessageSheetBox() {
+    const box = document.getElementById("messageSheetBox");
+    const button = document.getElementById("messageSheetBtn");
+
+    const isVisible = box.style.display === "block";
+    box.style.display = isVisible ? "none" : "block";
+
+    // Optional: update button label or color
+    button.textContent = isVisible
+      ? "Message Metrics Spreadsheet"
+      : "Hide Spreadsheet Upload";
+
+    button.classList.toggle("is-warning", isVisible);
+    button.classList.toggle("is-danger", !isVisible);
+  }
+
+
+
   // -------- Initialization --------
   document.addEventListener("DOMContentLoaded", () => {
-    fetch('dashboard.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('dashboardContainer').innerHTML = html;
-      });
-
     fetch('modal.html')
       .then(res => res.text())
       .then(html => {
