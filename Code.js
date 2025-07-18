@@ -310,26 +310,33 @@ function writeToNocChecklist(data) {
         if (oldValue !== newValue) {
           cell.setValue(newValue);
 
-          // Append red note AFTERRRRRRRR if status is not "TRUE"
+          // Append red note after if status is not "TRUE"
           if (newValue !== "TRUE") {
-            const descCell = sheet.getRange(targetRow + 1, 3); // Cell below server name in Col C
+            const descCell = sheet.getRange(targetRow, statusCol + 1); // Cell after server status
             const oldNote = descCell.getValue();
             const datePrefix = Utilities.formatDate(new Date(), tz, "M/d/yy");
-            const bullet = `- ${datePrefix}: ${server} status: ${newValue}`;
+            const bullet = `- ${datePrefix} status changed from ${oldValue} to ${newValue}`;
             const newNote = oldNote ? `${oldNote}\n${bullet}` : bullet;
 
-            descCell.setValue(newNote);
-
-            const start = newNote.length - bullet.length;
-            const end = newNote.length;
+            const existingLength = oldNote ? oldNote.length : 0;
             const redStyle = SpreadsheetApp.newTextStyle().setForegroundColor("red").build();
-            const richText = SpreadsheetApp.newRichTextValue()
-              .setText(newNote)
-              .setTextStyle(start, end, redStyle)
-              .build();
+            const blueStyle = SpreadsheetApp.newTextStyle().setForegroundColor("blue").build();
 
-            descCell.setRichTextValue(richText);
+            // Build full text with blue style by default
+            const builder = SpreadsheetApp.newRichTextValue()
+              .setText(newNote)
+              .setTextStyle(blueStyle);
+
+            // Then apply red only to the new bullet
+            const redStart = existingLength ? existingLength + 1 : 0; // +1 for newline if oldNote exists
+            const redEnd = newNote.length;
+            builder.setTextStyle(redStart, redEnd, redStyle);
+
+            // Write the styled comment
+            const styledValue = builder.build();
+            descCell.setRichTextValue(styledValue);
           }
+
         }
       }
     }
