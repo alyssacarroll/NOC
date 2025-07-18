@@ -63,8 +63,9 @@
           const status = statusRaw?.trim().toLowerCase();
           const tileId = checkNum.padStart(2, "0");
           const timestampDate = new Date(timestamp).toLocaleDateString();
-          const isOnHold = notes?.toLowerCase().includes("on hold");
           const tile = document.getElementById(tileId);
+          const holdKey = `onHold_${tileId}`;
+          const isOnHold = localStorage.getItem(holdKey) === "true";
 
           if (!tile) return;
 
@@ -72,8 +73,8 @@
 
           const statusDiv = tile.querySelector(".tile-status");
 
-          if (isOnHold && timestampDate === todayStr) {
-            tile.classList.add("warning");
+          if (isOnHold) {
+            tile.classList.add("on-hold");
             if (statusDiv) statusDiv.textContent = "Status: On Hold";
             return;
           }
@@ -132,6 +133,26 @@
 
     modalTitle.textContent = `Check ${checkNum}: ${title}`;
     formContent.innerHTML = formTemplates[checkNum] || `<p>Form for check ${checkNum} not available.</p>`;
+
+    // Setup On Hold toggle
+    const onHoldToggle = document.getElementById("onHoldToggle");
+    const onHoldLabel = document.getElementById("onHoldLabel");
+    const holdKey = `onHold_${checkNum}`;
+    const isOnHold = localStorage.getItem(holdKey) === "true";
+
+    onHoldToggle.checked = isOnHold;
+    onHoldLabel.style.color = isOnHold ? "black" : "lightgray";
+
+    // Sync toggle state with tile and storage
+    onHoldToggle.onchange = () => {
+      const newHoldState = onHoldToggle.checked;
+      localStorage.setItem(holdKey, newHoldState);
+      onHoldLabel.style.color = newHoldState ? "black" : "lightgray";
+
+      const tile = document.getElementById(checkNum.padStart(2, "0"));
+      if (tile) tile.classList.toggle("on-hold", newHoldState);
+    };
+
 
     // Add class only for Check 10
     modal.classList.remove('wave-server-popup');
