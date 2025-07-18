@@ -215,7 +215,7 @@ a {
   height: 18px;
   vertical-align: middle;
   margin-top: 5px;
-  transform: translateY(-1px);
+  transform: translateY(1px);
 }
 
 .switch-10 input {
@@ -254,7 +254,6 @@ input:checked+.slider-10 {
 
 input:checked+.slider-10:before {
   transform: translateX(-12px);
-  /* Adjusted for smaller switch */
 }
 
 .server-columns {
@@ -275,9 +274,7 @@ input:checked+.slider-10:before {
 .fly-grid {
   display: grid;
   grid-template-columns: repeat(4, auto);
-  /* 4 columns */
   gap: 10px 30px;
-  /* space between items */
   padding: 20px;
 }
 
