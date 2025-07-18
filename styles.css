@@ -92,10 +92,10 @@ a {
 }
 
 .on-hold {
-  border-color: gray;
+  border-color: rgb(171, 171, 171);
   box-shadow: 0 0 10px rgb(156, 156, 156);
   background-color: gray;
-  color: rgba(255, 255, 255, 0.639);
+  color: rgba(255, 255, 255, 0.806);
 }
 
 
