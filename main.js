@@ -1,6 +1,6 @@
 (() => {
   const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQohLpgMCkMfv1T6kUto-ole2NRCZCzfywnVNl98gxNFSY2BbFN4bVCpZu3QsL3DKLhwNqcqw8C8inf/pub?output=csv";
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzl403sVXO1E0cUIG3Omr8qlWbthQtasJAso6V0uWROgUt_D3HR9dRKcUG_Ln1uUM6_xQ/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEg3zDQTvzrkZPgnaIMRBT9InrP-Hz_yT7dOCK9KsXcOBPjnqqMjqtAjRG3f_zd3ae/exec";
 
   // ------- Utilities --------
   function formatDate(date = new Date()) {
