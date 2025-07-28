@@ -1,3 +1,4 @@
+
 const DATA_ENTRY_SHEET_NAME = "Sheet1";
 const TIME_STAMP_COLUMN_NAME = "Timestamp";
 const FOLDER_ID = "NOC";
@@ -5,11 +6,6 @@ const FOLDER_ID = "NOC";
 const NUMERIC_LOG_SHEET_NAME = 'DataEntry'; // Sheet name in the message metrics spreadsheet
 const DAILY_CHECKS_SPREADSHEET_ID = "1JwpraepmuSFGlhmcv8LwT_L7xVwCDcqi4MU4Rje7NvQ"; // ID of the target spreadsheet for daily checks
 // == CONFIGURATION END ==
-
-function doGet() {
-  return ContentService.createTextOutput("Web app is active and listening for POST requests.");
-}
-
 
 /**
  * Gets the ID of the Message Metrics spreadsheet.
